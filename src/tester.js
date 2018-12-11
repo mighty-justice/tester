@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { mount } from 'enzyme';
+let enzyme = {};
 
 const NullComponent = (props) => <Fragment {...props} />;
 
@@ -60,6 +60,7 @@ class Tester {
   shallow;
   TestedComponent;
   wrapper;
+  wrappers;
 
   constructor (TestedComponent, opts = {}) {
     this.opts = opts;
@@ -76,12 +77,21 @@ class Tester {
     }
 
     // Loop through hooks onInit(),
-    //for (const hookName of Object.keys(this.profile)) {
     for (const hookName of Object.keys(this.constructor.hooks)) {
       if (this.profile[hookName] && this.constructor.hooks[hookName] && typeof this.constructor.hooks[hookName].onInit === 'function') {
         this.constructor.hooks[hookName].onInit(this, opts);
       }
     }
+  }
+
+  getWrappers () {
+    const wrappers = [];
+    for (const hookName of Object.keys(this.constructor.hooks)) {
+      if (this.profile[hookName] && this.constructor.hooks[hookName] && typeof this.constructor.hooks[hookName].wrapper === 'function') {
+        wrappers.push(this.constructor.hooks[hookName].wrapper(this, this.opts));
+      }
+    }
+    return wrappers;
   }
 
   get instance () {
@@ -124,7 +134,7 @@ class Tester {
 
   createShallowWrapper () {
     this.shallow = {};
-    this.shallow.wrapper = mount(<this.TestedComponent.wrappedComponent {...this.props} { ...this.AppState } />);
+    this.shallow.wrapper = enzyme.mount(<this.TestedComponent.wrappedComponent {...this.props} { ...this.AppState } />);
     this.shallow.instance = getInstance(this.shallow.wrapper);
   }
 
@@ -142,18 +152,9 @@ class Tester {
       await this.onBeforeMount(this);
     }
 
-    const wrappers = [
-      /*
-      {
-          Component: Provider,
-          name: 'Provider',
-          props: this.AppState,
-        },
-      */
-      ]
-      , initialMount = this.initialMount || <this.TestedComponent {...this.props} />;
+    const initialMount = this.initialMount || <this.TestedComponent {...this.props} />;
 
-    const WrapperTree = wrappers.reduce((Tree, wrapper) => {
+    const WrapperTree = this.getWrappers().reduce((Tree, wrapper) => {
       const wrapperChildren = wrapper.renderChildren !== false && Tree;
       if (wrapper.props) {
         return <wrapper.Component {...wrapper.props}>{wrapperChildren}</wrapper.Component>;
@@ -161,7 +162,7 @@ class Tester {
       return Tree;
     }, initialMount);
 
-    this.wrapper = await mount(WrapperTree);
+    this.wrapper = await enzyme.mount(WrapperTree);
 
     if (this.opts.shallow) {
       this.createShallowWrapper();
@@ -204,6 +205,7 @@ Tester.registerProfile = (name, profile) => {
     onInit: fn(),
     onBeforeMount: fn(),
     shortCuts: {shortCutName: fn()},
+    wrapper: fn() => { Component: React.Component, name: string, props: object }
   }
 
   Note: Order is important!
@@ -228,5 +230,7 @@ Object.keys(Tester.profiles).forEach((profileKey) => {
     return new Tester(TestedComponent, {...opts, profile: Tester.profiles[profileKey]});
   };
 });
+
+Tester.setEnzyme = (passedEnzyme) => { enzyme = passedEnzyme; };
 
 export default Tester;

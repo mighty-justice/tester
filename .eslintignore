@@ -1,3 +1,4 @@
-**/*{.,-}min.js
+/dist/**
 _book/**
 index.js
+rollup.config.js
