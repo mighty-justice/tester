@@ -10,7 +10,7 @@
 
 # Other
 _book
-/dist
+.cache
 
 # OS X
 .DS_Store

@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 
 import { mount } from 'enzyme';
-import { Provider } from 'mobx-react';
 
 const NullComponent = (props) => <Fragment {...props} />;
 
@@ -94,6 +93,7 @@ class Tester {
   }
 
   debug () {
+    // eslint-disable-next-line no-console
     console.log(this.wrapper.debug());
   }
 
@@ -143,11 +143,13 @@ class Tester {
     }
 
     const wrappers = [
-        {
+      /*
+      {
           Component: Provider,
           name: 'Provider',
           props: this.AppState,
         },
+      */
       ]
       , initialMount = this.initialMount || <this.TestedComponent {...this.props} />;
 
