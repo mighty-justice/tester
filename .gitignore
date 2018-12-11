@@ -11,6 +11,7 @@
 # Other
 _book
 .cache
+source.html
 
 # OS X
 .DS_Store
