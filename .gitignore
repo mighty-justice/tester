@@ -9,8 +9,8 @@
 **/node_modules/
 
 # Other
+_book
 /dist
-/docs/index.md
 
 # OS X
 .DS_Store

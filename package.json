@@ -4,7 +4,10 @@
   "description": "Bootstrap your tests!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs:prepare": "gitbook install",
+    "docs:build": "npm run docs:prepare && gitbook build",
+    "docs:watch": "npm run docs:prepare && gitbook serve"
   },
   "repository": {
     "type": "git",
@@ -30,8 +33,7 @@
   "homepage": "https://github.com/mighty-justice/tester#readme",
   "devDependencies": {
     "eslint": "^5.10.0",
-    "gitbook-cli": "^2.3.2",
-    "gulp": "^4.0.0"
+    "gitbook-cli": "^2.3.2"
   },
   "dependencies": {
     "enzyme": "^3.8.0",
