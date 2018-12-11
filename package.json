@@ -1,0 +1,40 @@
+{
+  "name": "tester",
+  "version": "1.0.0",
+  "description": "Bootstrap your tests!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mighty-justice/tester.git"
+  },
+  "keywords": [
+    "javascript",
+    "test",
+    "reactjs",
+    "react",
+    "jest",
+    "enzyme",
+    "test",
+    "utils",
+    "bootstrap",
+    "configuration"
+  ],
+  "author": "Keven Bouchard <keven@mighty.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mighty-justice/tester/issues"
+  },
+  "homepage": "https://github.com/mighty-justice/tester#readme",
+  "devDependencies": {
+    "eslint": "^5.10.0",
+    "gitbook-cli": "^2.3.2",
+    "gulp": "^4.0.0"
+  },
+  "dependencies": {
+    "enzyme": "^3.8.0",
+    "react": "^16.6.3"
+  }
+}

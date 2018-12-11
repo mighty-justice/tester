@@ -1,0 +1,20 @@
+{
+  "root": "./docs",
+  "title": "Tester documentation",
+  "author": "tester",
+  "gitbook": "3.2.3",
+  "plugins": ["-lunr", "-search", "search-plus", "anchorjs", "ga"],
+  "pluginsConfig": {
+    "anchorjs": {
+      "icon": "#",
+      "placement": "left",
+      "visible": "always"
+    },
+    "theme-default": {
+      "showLevel": false,
+      "styles": {
+        "website": "style.css"
+      }
+    }
+  }
+}
