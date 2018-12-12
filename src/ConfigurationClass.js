@@ -10,10 +10,11 @@ class ConfigurationClass {
     // Default profile, each of it's properties can be overwritten.
     Default: {},
   };
+  Tester;
 
-  constructor (tester) {
-    this.tester = tester;
-    tester.config = this;
+  constructor (Tester) {
+    this.Tester = Tester;
+    Tester.Configuration = this;
   }
 
   configure (enzyme, config) {
@@ -34,9 +35,9 @@ class ConfigurationClass {
     this.createShortcuts();
 
     // Make it globally accessible
-    global.Tester = this.tester;
+    global.Tester = this.Tester;
 
-    return this.tester;
+    return this.Tester;
   }
 
   /*
@@ -47,10 +48,9 @@ class ConfigurationClass {
     Using a new Tester.Light(MyComponent) allows you to skip the initialization of Transport, localStorage + Session and AppState.
   */
   createShortcuts () {
-    const Tester = this.tester;
     Object.keys(this.profiles).forEach((profileKey) => {
-      Tester[profileKey] = (TestedComponent, opts = {}) => {
-        return new Tester(TestedComponent, {...opts, profile: this.profiles[profileKey]});
+      this.Tester[profileKey] = (TestedComponent, opts = {}) => {
+        return new this.Tester(TestedComponent, {...opts, profile: this.profiles[profileKey]});
       };
     });
   }
@@ -97,6 +97,22 @@ class ConfigurationClass {
     //  - Does every key or the profile is a hook ?
 
     this.profiles[capitalizedName] = profile;
+  }
+
+  getValidHooks (tester, hookProp) {
+    const hooks = [];
+
+    Object.values(this.hooks).forEach((hook) => {
+      let valid = true;
+      if (!tester.profile[hook.name]) { valid = false; }
+      if (hookProp && !hook[hookProp]) { valid = false; }
+
+      if (valid) {
+        hooks.push(hook);
+      }
+    });
+
+    return hooks;
   }
 
 }

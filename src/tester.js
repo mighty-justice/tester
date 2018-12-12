@@ -58,7 +58,7 @@ class Tester {
   wrappers;
 
   constructor (TestedComponent, opts = {}) {
-    this.config = this.constructor.config;
+    this.config = this.constructor.Configuration;
     this.opts = opts;
     this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
@@ -73,26 +73,22 @@ class Tester {
     }
 
     // Loop through hooks onInit(),
-    for (const hookName of Object.keys(this.config.hooks)) {
-      if (this.profile[hookName] && this.config.hooks[hookName] && typeof this.config.hooks[hookName].onInit === 'function') {
-        this.config.hooks[hookName].onInit(this, opts);
-      }
-    }
+    this.config.getValidHooks(this, 'onInit').forEach((hook) => {
+      hook.onInit(this);
+    });
   }
 
   getWrappers () {
     const wrappers = [];
-    let hook;
-    for (const hookName of Object.keys(this.config.hooks)) {
-      hook = this.config.hooks[hookName];
-      if (this.profile[hookName] && hook && typeof hook.component) {
-        wrappers.push({
-          component: hook.component,
-          name: hook.name,
-          props: getValue(this, hook.props),
-        });
-      }
-    }
+
+    this.config.getValidHooks(this, 'component').forEach((hook) => {
+      wrappers.push({
+        component: hook.component,
+        name: hook.name,
+        props: getValue(this, hook.props),
+      });
+    });
+
     return wrappers;
   }
 
@@ -143,11 +139,9 @@ class Tester {
   async mount (mountOpts = {}) {
 
     // Loop through hooks onBeforeMount(),
-    for (const hookName of Object.keys(this.profile)) {
-      if (this.profile[hookName] && this.config.hooks[hookName] && typeof this.config.hooks[hookName].onBeforeMount === 'function') {
-        await this.config.hooks[hookName].onBeforeMount(this, mountOpts);
-      }
-    }
+    this.config.getValidHooks(this, 'onBeforeMount').forEach(async (hook) => {
+      await hook.onBeforeMount(this, mountOpts);
+    });
 
     // Allows you to fetch data to set as props, prepare extra stores, etc.
     if (this.onBeforeMount) {

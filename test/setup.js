@@ -10,11 +10,15 @@ enzyme.configure({ adapter: new Adapter() });
 //Tester.setEnzyme(enzyme);
 //global.Tester = Tester;
 
-const TestHookComponent = ({ propOne, propTwo, ...props}) => <div className='test-hook-component' {...props} />;
+const TestHookComponent = ({ propOne, propTwo, ...rest}) => {
+  console.log('TestHookComponent.render()', rest);
+  return (<div id='test-hook-unique' ><div className='test-hook-component' {...rest} /></div>);
+};
+
 TestHookComponent.propTypes = {
   propOne: PropTypes.string,
   propTwo: PropTypes.string,
-}
+};
 
 TesterConfig.configure(enzyme, {
   hooks: [
@@ -32,7 +36,7 @@ TesterConfig.configure(enzyme, {
   ],
   profiles: [
     {
-      name: 'TestHook',
+      name: 'TestProfile',
       testHook: true,
     },
   ],
