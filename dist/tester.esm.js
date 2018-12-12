@@ -592,5 +592,4 @@ function () {
 
 var TesterConfig = new ConfigurationClass(Tester);
 
-export default Tester;
 export { TesterConfig };

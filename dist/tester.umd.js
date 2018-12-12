@@ -598,7 +598,6 @@
 
   var TesterConfig = new ConfigurationClass(Tester);
 
-  exports.default = Tester;
   exports.TesterConfig = TesterConfig;
 
   Object.defineProperty(exports, '__esModule', { value: true });

@@ -7,9 +7,6 @@ import { TesterConfig } from '../src';
 
 enzyme.configure({ adapter: new Adapter() });
 
-//Tester.setEnzyme(enzyme);
-//global.Tester = Tester;
-
 const TestHookComponent = ({ propOne, propTwo, ...rest}) => {
   console.log('TestHookComponent.render()', rest);
   return (<div id='test-hook-unique' ><div className='test-hook-component' {...rest} /></div>);

@@ -7,7 +7,7 @@ export default [
   // browser-friendly UMD build
   
   {
-    input: 'src/tester.js',
+    input: 'src/index.js',
     output: {
       file: pkg.browser,
       format: 'umd',
@@ -43,7 +43,7 @@ export default [
       'react-proptypes',
       'enzyme',
     ],
-    input: 'src/tester.js',
+    input: 'src/index.js',
     output: [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
