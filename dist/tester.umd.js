@@ -485,54 +485,90 @@
       value: function () {
         var _mount = _asyncToGenerator(
         /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee4() {
-          var _this3 = this;
-
+        regeneratorRuntime.mark(function _callee3() {
           var mountOpts,
+              _iteratorNormalCompletion,
+              _didIteratorError,
+              _iteratorError,
+              _iterator,
+              _step,
+              hook,
               initialMount,
               WrapperTree,
-              _args4 = arguments;
-          return regeneratorRuntime.wrap(function _callee4$(_context4) {
+              _args3 = arguments;
+
+          return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
-              switch (_context4.prev = _context4.next) {
+              switch (_context3.prev = _context3.next) {
                 case 0:
-                  mountOpts = _args4.length > 0 && _args4[0] !== undefined ? _args4[0] : {};
+                  mountOpts = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : {};
                   // Loop through hooks onBeforeMount(),
-                  this.config.getValidHooks(this, 'onBeforeMount').forEach(
-                  /*#__PURE__*/
-                  function () {
-                    var _ref = _asyncToGenerator(
-                    /*#__PURE__*/
-                    regeneratorRuntime.mark(function _callee3(hook) {
-                      return regeneratorRuntime.wrap(function _callee3$(_context3) {
-                        while (1) {
-                          switch (_context3.prev = _context3.next) {
-                            case 0:
-                              _context3.next = 2;
-                              return hook.onBeforeMount(_this3, mountOpts);
+                  // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
+                  _iteratorNormalCompletion = true;
+                  _didIteratorError = false;
+                  _iteratorError = undefined;
+                  _context3.prev = 4;
+                  _iterator = this.config.getValidHooks(this, 'onBeforeMount')[Symbol.iterator]();
 
-                            case 2:
-                            case "end":
-                              return _context3.stop();
-                          }
-                        }
-                      }, _callee3, this);
-                    }));
-
-                    return function (_x3) {
-                      return _ref.apply(this, arguments);
-                    };
-                  }()); // Allows you to fetch data to set as props, prepare extra stores, etc.
-
-                  if (!this.onBeforeMount) {
-                    _context4.next = 5;
+                case 6:
+                  if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+                    _context3.next = 13;
                     break;
                   }
 
-                  _context4.next = 5;
+                  hook = _step.value;
+                  _context3.next = 10;
+                  return hook.onBeforeMount(this, mountOpts);
+
+                case 10:
+                  _iteratorNormalCompletion = true;
+                  _context3.next = 6;
+                  break;
+
+                case 13:
+                  _context3.next = 19;
+                  break;
+
+                case 15:
+                  _context3.prev = 15;
+                  _context3.t0 = _context3["catch"](4);
+                  _didIteratorError = true;
+                  _iteratorError = _context3.t0;
+
+                case 19:
+                  _context3.prev = 19;
+                  _context3.prev = 20;
+
+                  if (!_iteratorNormalCompletion && _iterator.return != null) {
+                    _iterator.return();
+                  }
+
+                case 22:
+                  _context3.prev = 22;
+
+                  if (!_didIteratorError) {
+                    _context3.next = 25;
+                    break;
+                  }
+
+                  throw _iteratorError;
+
+                case 25:
+                  return _context3.finish(22);
+
+                case 26:
+                  return _context3.finish(19);
+
+                case 27:
+                  if (!this.onBeforeMount) {
+                    _context3.next = 30;
+                    break;
+                  }
+
+                  _context3.next = 30;
                   return this.onBeforeMount(this);
 
-                case 5:
+                case 30:
                   initialMount = this.initialMount || React__default.createElement(this.TestedComponent, this.props);
                   WrapperTree = this.getWrappers().reduce(function (Tree, wrapper) {
                     var wrapperChildren = wrapper.renderChildren !== false && Tree;
@@ -543,36 +579,36 @@
 
                     return Tree;
                   }, initialMount);
-                  _context4.next = 9;
+                  _context3.next = 34;
                   return this.config.enzyme.mount(WrapperTree);
 
-                case 9:
-                  this.wrapper = _context4.sent;
+                case 34:
+                  this.wrapper = _context3.sent;
 
                   if (this.opts.shallow) {
                     this.createShallowWrapper();
                   }
 
                   if (!mountOpts.async) {
-                    _context4.next = 15;
+                    _context3.next = 40;
                     break;
                   }
 
-                  _context4.next = 14;
+                  _context3.next = 39;
                   return this.sleep();
 
-                case 14:
+                case 39:
                   this.update();
 
-                case 15:
-                  return _context4.abrupt("return", this);
+                case 40:
+                  return _context3.abrupt("return", this);
 
-                case 16:
+                case 41:
                 case "end":
-                  return _context4.stop();
+                  return _context3.stop();
               }
             }
-          }, _callee4, this);
+          }, _callee3, this, [[4, 15, 19, 27], [20,, 22, 26]]);
         }));
 
         function mount() {

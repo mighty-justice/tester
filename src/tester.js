@@ -139,9 +139,10 @@ class Tester {
   async mount (mountOpts = {}) {
 
     // Loop through hooks onBeforeMount(),
-    this.config.getValidHooks(this, 'onBeforeMount').forEach(async (hook) => {
+    // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
+    for (const hook of this.config.getValidHooks(this, 'onBeforeMount')) {
       await hook.onBeforeMount(this, mountOpts);
-    });
+    }
 
     // Allows you to fetch data to set as props, prepare extra stores, etc.
     if (this.onBeforeMount) {

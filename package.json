@@ -6,7 +6,7 @@
   "module": "dist/tester.esm.js",
   "browser": "dist/tester.umd.js",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "clean": "rm -r dist/*",
