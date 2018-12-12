@@ -6,20 +6,6 @@
 
   var React__default = 'default' in React ? React['default'] : React;
 
-  function _typeof(obj) {
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      _typeof = function (obj) {
-        return typeof obj;
-      };
-    } else {
-      _typeof = function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
-  }
-
   function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
     try {
       var info = gen[key](arg);
@@ -160,7 +146,7 @@
   var ConfigurationClass =
   /*#__PURE__*/
   function () {
-    function ConfigurationClass(tester) {
+    function ConfigurationClass(Tester) {
       _classCallCheck(this, ConfigurationClass);
 
       _defineProperty(this, "enzyme", void 0);
@@ -172,8 +158,10 @@
         Default: {}
       });
 
-      this.tester = tester;
-      tester.config = this;
+      _defineProperty(this, "Tester", void 0);
+
+      this.Tester = Tester;
+      Tester.Configuration = this;
     }
 
     _createClass(ConfigurationClass, [{
@@ -197,8 +185,8 @@
 
         this.createShortcuts(); // Make it globally accessible
 
-        global.Tester = this.tester;
-        return this.tester;
+        global.Tester = this.Tester;
+        return this.Tester;
       }
       /*
         Create shortcuts for each global profiles
@@ -212,11 +200,10 @@
       value: function createShortcuts() {
         var _this2 = this;
 
-        var Tester = this.tester;
         Object.keys(this.profiles).forEach(function (profileKey) {
-          Tester[profileKey] = function (TestedComponent) {
+          _this2.Tester[profileKey] = function (TestedComponent) {
             var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-            return new Tester(TestedComponent, _objectSpread({}, opts, {
+            return new _this2.Tester(TestedComponent, _objectSpread({}, opts, {
               profile: _this2.profiles[profileKey]
             }));
           };
@@ -274,6 +261,27 @@
 
         this.profiles[capitalizedName] = profile;
       }
+    }, {
+      key: "getValidHooks",
+      value: function getValidHooks(tester, hookProp) {
+        var hooks = [];
+        Object.values(this.hooks).forEach(function (hook) {
+          var valid = true;
+
+          if (!tester.profile[hook.name]) {
+            valid = false;
+          }
+
+          if (hookProp && !hook[hookProp]) {
+            valid = false;
+          }
+
+          if (valid) {
+            hooks.push(hook);
+          }
+        });
+        return hooks;
+      }
     }]);
 
     return ConfigurationClass;
@@ -322,6 +330,8 @@
   /*#__PURE__*/
   function () {
     function Tester(TestedComponent) {
+      var _this = this;
+
       var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       _classCallCheck(this, Tester);
@@ -346,7 +356,7 @@
 
       _defineProperty(this, "wrappers", void 0);
 
-      this.config = this.constructor.config;
+      this.config = this.constructor.Configuration;
       this.opts = opts;
       this.initialMount = opts.mount;
       this.onBeforeMount = opts.onBeforeMount;
@@ -360,38 +370,24 @@
       } // Loop through hooks onInit(),
 
 
-      var _arr = Object.keys(this.config.hooks);
-
-      for (var _i = 0; _i < _arr.length; _i++) {
-        var hookName = _arr[_i];
-
-        if (this.profile[hookName] && this.config.hooks[hookName] && typeof this.config.hooks[hookName].onInit === 'function') {
-          this.config.hooks[hookName].onInit(this, opts);
-        }
-      }
+      this.config.getValidHooks(this, 'onInit').forEach(function (hook) {
+        hook.onInit(_this);
+      });
     }
 
     _createClass(Tester, [{
       key: "getWrappers",
       value: function getWrappers() {
+        var _this2 = this;
+
         var wrappers = [];
-        var hook;
-
-        var _arr2 = Object.keys(this.config.hooks);
-
-        for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
-          var hookName = _arr2[_i2];
-          hook = this.config.hooks[hookName];
-
-          if (this.profile[hookName] && hook && _typeof(hook.component)) {
-            wrappers.push({
-              component: hook.component,
-              name: hook.name,
-              props: getValue(this, hook.props)
-            });
-          }
-        }
-
+        this.config.getValidHooks(this, 'component').forEach(function (hook) {
+          wrappers.push({
+            component: hook.component,
+            name: hook.name,
+            props: getValue(_this2, hook.props)
+          });
+        });
         return wrappers;
       }
     }, {
@@ -489,55 +485,54 @@
       value: function () {
         var _mount = _asyncToGenerator(
         /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee3() {
+        regeneratorRuntime.mark(function _callee4() {
+          var _this3 = this;
+
           var mountOpts,
-              _arr3,
-              _i3,
-              hookName,
               initialMount,
               WrapperTree,
-              _args3 = arguments;
-
-          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+              _args4 = arguments;
+          return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
-              switch (_context3.prev = _context3.next) {
+              switch (_context4.prev = _context4.next) {
                 case 0:
-                  mountOpts = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : {};
+                  mountOpts = _args4.length > 0 && _args4[0] !== undefined ? _args4[0] : {};
                   // Loop through hooks onBeforeMount(),
-                  _arr3 = Object.keys(this.profile);
-                  _i3 = 0;
+                  this.config.getValidHooks(this, 'onBeforeMount').forEach(
+                  /*#__PURE__*/
+                  function () {
+                    var _ref = _asyncToGenerator(
+                    /*#__PURE__*/
+                    regeneratorRuntime.mark(function _callee3(hook) {
+                      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                        while (1) {
+                          switch (_context3.prev = _context3.next) {
+                            case 0:
+                              _context3.next = 2;
+                              return hook.onBeforeMount(_this3, mountOpts);
 
-                case 3:
-                  if (!(_i3 < _arr3.length)) {
-                    _context3.next = 11;
-                    break;
-                  }
+                            case 2:
+                            case "end":
+                              return _context3.stop();
+                          }
+                        }
+                      }, _callee3, this);
+                    }));
 
-                  hookName = _arr3[_i3];
+                    return function (_x3) {
+                      return _ref.apply(this, arguments);
+                    };
+                  }()); // Allows you to fetch data to set as props, prepare extra stores, etc.
 
-                  if (!(this.profile[hookName] && this.config.hooks[hookName] && typeof this.config.hooks[hookName].onBeforeMount === 'function')) {
-                    _context3.next = 8;
-                    break;
-                  }
-
-                  _context3.next = 8;
-                  return this.config.hooks[hookName].onBeforeMount(this, mountOpts);
-
-                case 8:
-                  _i3++;
-                  _context3.next = 3;
-                  break;
-
-                case 11:
                   if (!this.onBeforeMount) {
-                    _context3.next = 14;
+                    _context4.next = 5;
                     break;
                   }
 
-                  _context3.next = 14;
+                  _context4.next = 5;
                   return this.onBeforeMount(this);
 
-                case 14:
+                case 5:
                   initialMount = this.initialMount || React__default.createElement(this.TestedComponent, this.props);
                   WrapperTree = this.getWrappers().reduce(function (Tree, wrapper) {
                     var wrapperChildren = wrapper.renderChildren !== false && Tree;
@@ -548,36 +543,36 @@
 
                     return Tree;
                   }, initialMount);
-                  _context3.next = 18;
+                  _context4.next = 9;
                   return this.config.enzyme.mount(WrapperTree);
 
-                case 18:
-                  this.wrapper = _context3.sent;
+                case 9:
+                  this.wrapper = _context4.sent;
 
                   if (this.opts.shallow) {
                     this.createShallowWrapper();
                   }
 
                   if (!mountOpts.async) {
-                    _context3.next = 24;
+                    _context4.next = 15;
                     break;
                   }
 
-                  _context3.next = 23;
+                  _context4.next = 14;
                   return this.sleep();
 
-                case 23:
+                case 14:
                   this.update();
 
-                case 24:
-                  return _context3.abrupt("return", this);
+                case 15:
+                  return _context4.abrupt("return", this);
 
-                case 25:
+                case 16:
                 case "end":
-                  return _context3.stop();
+                  return _context4.stop();
               }
             }
-          }, _callee3, this);
+          }, _callee4, this);
         }));
 
         function mount() {
