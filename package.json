@@ -1,5 +1,5 @@
 {
-  "name": "tester",
+  "name": "@mighty-justice/tester",
   "version": "1.0.0",
   "description": "Bootstrap your tests!",
   "main": "dist/tester.cjs.js",
