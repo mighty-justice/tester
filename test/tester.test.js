@@ -11,6 +11,13 @@ describe('Tester', () => {
 
   it('Init tests', async () => {
     const tester = await new Tester(MyTestingComponent).mount();
+    tester.debug();
+    expect(tester.wrapper).toBeTruthy();
+  });
+
+  it('Init tests TestHook', async () => {
+    const tester = await new Tester.TestHook(MyTestingComponent).mount();
+    tester.debug();
     expect(tester.wrapper).toBeTruthy();
   });
 });

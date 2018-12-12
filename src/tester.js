@@ -1,21 +1,15 @@
 import React, { Fragment } from 'react';
 
-let enzyme = {};
+import {
+  getInstance,
+  getValue,
+  sleep,
+} from './utils';
+
+import ConfigurationClass from './ConfigurationClass';
 
 const NullComponent = (props) => <Fragment {...props} />;
 
-function getInstance (component) {
-  const instance = component.instance();
-  return instance.wrappedInstance || instance;
-}
-
-function sleep (ms = 0) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function capitalize (string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
 
 /*
   Name: Tester
@@ -52,6 +46,7 @@ function capitalize (string) {
  * @returns {Tester}
  */
 class Tester {
+  config;
   initialMount;
   onBeforeMount;
   opts;
@@ -63,10 +58,11 @@ class Tester {
   wrappers;
 
   constructor (TestedComponent, opts = {}) {
+    this.config = this.constructor.config;
     this.opts = opts;
     this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
-    this.profile = {...this.constructor.profiles.Default, ...opts.profile};
+    this.profile = {...this.config.profiles.Default, ...opts.profile};
     this.props = opts.props || {};
     this.TestedComponent = TestedComponent;
 
@@ -77,18 +73,24 @@ class Tester {
     }
 
     // Loop through hooks onInit(),
-    for (const hookName of Object.keys(this.constructor.hooks)) {
-      if (this.profile[hookName] && this.constructor.hooks[hookName] && typeof this.constructor.hooks[hookName].onInit === 'function') {
-        this.constructor.hooks[hookName].onInit(this, opts);
+    for (const hookName of Object.keys(this.config.hooks)) {
+      if (this.profile[hookName] && this.config.hooks[hookName] && typeof this.config.hooks[hookName].onInit === 'function') {
+        this.config.hooks[hookName].onInit(this, opts);
       }
     }
   }
 
   getWrappers () {
     const wrappers = [];
-    for (const hookName of Object.keys(this.constructor.hooks)) {
-      if (this.profile[hookName] && this.constructor.hooks[hookName] && typeof this.constructor.hooks[hookName].wrapper === 'function') {
-        wrappers.push(this.constructor.hooks[hookName].wrapper(this, this.opts));
+    let hook;
+    for (const hookName of Object.keys(this.config.hooks)) {
+      hook = this.config.hooks[hookName];
+      if (this.profile[hookName] && hook && typeof hook.component) {
+        wrappers.push({
+          component: hook.component,
+          name: hook.name,
+          props: getValue(this, hook.props),
+        });
       }
     }
     return wrappers;
@@ -134,7 +136,7 @@ class Tester {
 
   createShallowWrapper () {
     this.shallow = {};
-    this.shallow.wrapper = enzyme.mount(<this.TestedComponent.wrappedComponent {...this.props} { ...this.AppState } />);
+    this.shallow.wrapper = this.config.enzyme.mount(<this.TestedComponent.wrappedComponent {...this.props} { ...this.AppState } />);
     this.shallow.instance = getInstance(this.shallow.wrapper);
   }
 
@@ -142,8 +144,8 @@ class Tester {
 
     // Loop through hooks onBeforeMount(),
     for (const hookName of Object.keys(this.profile)) {
-      if (this.profile[hookName] && this.constructor.hooks[hookName] && typeof this.constructor.hooks[hookName].onBeforeMount === 'function') {
-        await this.constructor.hooks[hookName].onBeforeMount(this, mountOpts);
+      if (this.profile[hookName] && this.config.hooks[hookName] && typeof this.config.hooks[hookName].onBeforeMount === 'function') {
+        await this.config.hooks[hookName].onBeforeMount(this, mountOpts);
       }
     }
 
@@ -157,12 +159,12 @@ class Tester {
     const WrapperTree = this.getWrappers().reduce((Tree, wrapper) => {
       const wrapperChildren = wrapper.renderChildren !== false && Tree;
       if (wrapper.props) {
-        return <wrapper.Component {...wrapper.props}>{wrapperChildren}</wrapper.Component>;
+        return <wrapper.component {...wrapper.props}>{wrapperChildren}</wrapper.component>;
       }
       return Tree;
     }, initialMount);
 
-    this.wrapper = await enzyme.mount(WrapperTree);
+    this.wrapper = await this.config.enzyme.mount(WrapperTree);
 
     if (this.opts.shallow) {
       this.createShallowWrapper();
@@ -177,60 +179,9 @@ class Tester {
   }
 }
 
-/*
-  Profiles,
-  {
-    // Profile keys must be hook names.
-  }
-*/
-Tester.profiles = {
-  // Default profile, each of it's properties can be overwritten.
-  Default: {},
-};
-Tester.registerProfile = (name, profile) => {
-  const capitalizedName = capitalize(name);
-  if (Tester.profiles[capitalizedName] && capitalizedName !== 'Default') {
-    throw new Error(`Tester.registerProfile() : A profile named "${capitalizedName}" already exist.`);
-  }
-
-  Tester.profiles[capitalizedName] = profile;
-};
-
-/*
-  Hooks,
-  {
-    name: string,
-    component: React.Component,
-    props: object || fn(), // fn() allows this.AppState to be set for e.g
-    onInit: fn(),
-    onBeforeMount: fn(),
-    shortCuts: {shortCutName: fn()},
-    wrapper: fn() => { Component: React.Component, name: string, props: object }
-  }
-
-  Note: Order is important!
-*/
-Tester.hooks = {};
-Tester.registerHook = (hook) => {
-  if (!hook.name) { throw new Error('Tester.registerHook() : A hooks must have a name.'); }
-  if (Tester.hooks[hook.name]) { throw new Error(`Tester.registerHook() : A hook named "${hook.name}" already exist.`); }
-
-  Tester.hooks[hook.name] = hook;
-};
-
-/*
-  Create shortcuts for each global profiles
-  Tester shortcuts allows you to use a specific global profile without having to pass it in in the options.
-
-  E.g.
-  Using a new Tester.Light(MyComponent) allows you to skip the initialization of Transport, localStorage + Session and AppState.
-*/
-Object.keys(Tester.profiles).forEach((profileKey) => {
-  Tester[profileKey] = function (TestedComponent, opts = {}) {
-    return new Tester(TestedComponent, {...opts, profile: Tester.profiles[profileKey]});
-  };
-});
-
-Tester.setEnzyme = (passedEnzyme) => { enzyme = passedEnzyme; };
+const TesterConfig = new ConfigurationClass(Tester);
 
 export default Tester;
+export {
+  TesterConfig,
+};

@@ -1,9 +1,25 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var React = require('react');
 var React__default = _interopDefault(React);
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
@@ -115,18 +131,19 @@ function _objectSpread(target) {
   return target;
 }
 
-var enzyme = {};
-
-var NullComponent = function NullComponent(props) {
-  return React__default.createElement(React.Fragment, props);
-};
-
+/*
+  Utilities
+*/
 function getInstance(component) {
   var instance = component.instance();
   return instance.wrappedInstance || instance;
 }
 
-function _sleep() {
+function getValue(tester, value) {
+  return typeof value === 'function' ? value(tester) : value;
+}
+
+function sleep() {
   var ms = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   return new Promise(function (resolve) {
     return setTimeout(resolve, ms);
@@ -136,6 +153,136 @@ function _sleep() {
 function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+/*
+  Tester Configuration Class
+*/
+
+var ConfigurationClass =
+/*#__PURE__*/
+function () {
+  function ConfigurationClass(tester) {
+    _classCallCheck(this, ConfigurationClass);
+
+    _defineProperty(this, "enzyme", void 0);
+
+    _defineProperty(this, "hooks", {});
+
+    _defineProperty(this, "profiles", {
+      // Default profile, each of it's properties can be overwritten.
+      Default: {}
+    });
+
+    this.tester = tester;
+    tester.config = this;
+  }
+
+  _createClass(ConfigurationClass, [{
+    key: "configure",
+    value: function configure(enzyme, config) {
+      var _this = this;
+
+      this.enzyme = enzyme;
+
+      if (config.hooks) {
+        config.hooks.forEach(function (hook) {
+          _this.registerHook(hook);
+        });
+      }
+
+      if (config.profiles) {
+        config.profiles.forEach(function (profile) {
+          _this.registerProfile(profile);
+        });
+      }
+
+      this.createShortcuts(); // Make it globally accessible
+
+      global.Tester = this.tester;
+      return this.tester;
+    }
+    /*
+      Create shortcuts for each global profiles
+      Tester shortcuts allows you to use a specific global profile without having to pass it in in the options.
+       E.g.
+      Using a new Tester.Light(MyComponent) allows you to skip the initialization of Transport, localStorage + Session and AppState.
+    */
+
+  }, {
+    key: "createShortcuts",
+    value: function createShortcuts() {
+      var _this2 = this;
+
+      var Tester = this.tester;
+      Object.keys(this.profiles).forEach(function (profileKey) {
+        Tester[profileKey] = function (TestedComponent) {
+          var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+          return new Tester(TestedComponent, _objectSpread({}, opts, {
+            profile: _this2.profiles[profileKey]
+          }));
+        };
+      });
+    }
+    /*
+      Hooks,
+      {
+        name: string,
+        component: React.Component,
+        props: object || fn(), // fn() allows this.AppState to be set for e.g
+        onInit: fn(),
+        onBeforeMount: fn(),
+        shortCuts: {shortCutName: fn()},
+        wrapper: fn() => { Component: React.Component, name: string, props: object }
+      }
+       Note: Order is important!
+    */
+
+  }, {
+    key: "registerHook",
+    value: function registerHook(hook) {
+      if (!hook.name) {
+        throw new Error('Tester.registerHook() : A hooks must have a name.');
+      }
+
+      if (this.hooks[hook.name]) {
+        throw new Error("Tester.registerHook() : A hook named \"".concat(hook.name, "\" already exist."));
+      } // Validate hook properties here.
+
+
+      this.hooks[hook.name] = hook;
+    }
+    /*
+      Profiles,
+      {
+        // Profile keys must be hook names.
+      }
+    */
+
+  }, {
+    key: "registerProfile",
+    value: function registerProfile(profile) {
+      if (!profile.name) {
+        throw new Error('Tester.registerHook() : A hooks must have a name.');
+      }
+
+      var capitalizedName = capitalize(profile.name);
+
+      if (this.profiles[capitalizedName] && capitalizedName !== 'Default') {
+        throw new Error("Tester.registerProfile() : A profile named \"".concat(capitalizedName, "\" already exist."));
+      } // Validate profile properties here.
+      //  - Does every key or the profile is a hook ?
+
+
+      this.profiles[capitalizedName] = profile;
+    }
+  }]);
+
+  return ConfigurationClass;
+}();
+
+var NullComponent = function NullComponent(props) {
+  return React__default.createElement(React.Fragment, props);
+};
 /*
   Name: Tester
   Description: Testing utility class to mount a specific component with it's required wrappers.
@@ -180,6 +327,8 @@ function () {
 
     _classCallCheck(this, Tester);
 
+    _defineProperty(this, "config", void 0);
+
     _defineProperty(this, "initialMount", void 0);
 
     _defineProperty(this, "onBeforeMount", void 0);
@@ -198,10 +347,11 @@ function () {
 
     _defineProperty(this, "wrappers", void 0);
 
+    this.config = this.constructor.config;
     this.opts = opts;
     this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
-    this.profile = _objectSpread({}, this.constructor.profiles.Default, opts.profile);
+    this.profile = _objectSpread({}, this.config.profiles.Default, opts.profile);
     this.props = opts.props || {};
     this.TestedComponent = TestedComponent; // Allow testing without a main TestedComponent. This require an initialMount.
 
@@ -211,13 +361,13 @@ function () {
     } // Loop through hooks onInit(),
 
 
-    var _arr = Object.keys(this.constructor.hooks);
+    var _arr = Object.keys(this.config.hooks);
 
     for (var _i = 0; _i < _arr.length; _i++) {
       var hookName = _arr[_i];
 
-      if (this.profile[hookName] && this.constructor.hooks[hookName] && typeof this.constructor.hooks[hookName].onInit === 'function') {
-        this.constructor.hooks[hookName].onInit(this, opts);
+      if (this.profile[hookName] && this.config.hooks[hookName] && typeof this.config.hooks[hookName].onInit === 'function') {
+        this.config.hooks[hookName].onInit(this, opts);
       }
     }
   }
@@ -226,14 +376,20 @@ function () {
     key: "getWrappers",
     value: function getWrappers() {
       var wrappers = [];
+      var hook;
 
-      var _arr2 = Object.keys(this.constructor.hooks);
+      var _arr2 = Object.keys(this.config.hooks);
 
       for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
         var hookName = _arr2[_i2];
+        hook = this.config.hooks[hookName];
 
-        if (this.profile[hookName] && this.constructor.hooks[hookName] && typeof this.constructor.hooks[hookName].wrapper === 'function') {
-          wrappers.push(this.constructor.hooks[hookName].wrapper(this, this.opts));
+        if (this.profile[hookName] && hook && _typeof(hook.component)) {
+          wrappers.push({
+            component: hook.component,
+            name: hook.name,
+            props: getValue(this, hook.props)
+          });
         }
       }
 
@@ -276,7 +432,7 @@ function () {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return _sleep(ms);
+                return sleep(ms);
 
               case 2:
               case "end":
@@ -286,11 +442,11 @@ function () {
         }, _callee, this);
       }));
 
-      function sleep(_x) {
+      function sleep$$1(_x) {
         return _sleep2.apply(this, arguments);
       }
 
-      return sleep;
+      return sleep$$1;
     }()
   }, {
     key: "refresh",
@@ -303,7 +459,7 @@ function () {
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return _sleep(ms);
+                return sleep(ms);
 
               case 2:
                 this.update();
@@ -326,7 +482,7 @@ function () {
     key: "createShallowWrapper",
     value: function createShallowWrapper() {
       this.shallow = {};
-      this.shallow.wrapper = enzyme.mount(React__default.createElement(this.TestedComponent.wrappedComponent, _extends({}, this.props, this.AppState)));
+      this.shallow.wrapper = this.config.enzyme.mount(React__default.createElement(this.TestedComponent.wrappedComponent, _extends({}, this.props, this.AppState)));
       this.shallow.instance = getInstance(this.shallow.wrapper);
     }
   }, {
@@ -360,13 +516,13 @@ function () {
 
                 hookName = _arr3[_i3];
 
-                if (!(this.profile[hookName] && this.constructor.hooks[hookName] && typeof this.constructor.hooks[hookName].onBeforeMount === 'function')) {
+                if (!(this.profile[hookName] && this.config.hooks[hookName] && typeof this.config.hooks[hookName].onBeforeMount === 'function')) {
                   _context3.next = 8;
                   break;
                 }
 
                 _context3.next = 8;
-                return this.constructor.hooks[hookName].onBeforeMount(this, mountOpts);
+                return this.config.hooks[hookName].onBeforeMount(this, mountOpts);
 
               case 8:
                 _i3++;
@@ -388,13 +544,13 @@ function () {
                   var wrapperChildren = wrapper.renderChildren !== false && Tree;
 
                   if (wrapper.props) {
-                    return React__default.createElement(wrapper.Component, wrapper.props, wrapperChildren);
+                    return React__default.createElement(wrapper.component, wrapper.props, wrapperChildren);
                   }
 
                   return Tree;
                 }, initialMount);
                 _context3.next = 18;
-                return enzyme.mount(WrapperTree);
+                return this.config.enzyme.mount(WrapperTree);
 
               case 18:
                 this.wrapper = _context3.sent;
@@ -445,77 +601,8 @@ function () {
 
   return Tester;
 }();
-/*
-  Profiles,
-  {
-    // Profile keys must be hook names.
-  }
-*/
 
+var TesterConfig = new ConfigurationClass(Tester);
 
-Tester.profiles = {
-  // Default profile, each of it's properties can be overwritten.
-  Default: {}
-};
-
-Tester.registerProfile = function (name, profile) {
-  var capitalizedName = capitalize(name);
-
-  if (Tester.profiles[capitalizedName] && capitalizedName !== 'Default') {
-    throw new Error("Tester.registerProfile() : A profile named \"".concat(capitalizedName, "\" already exist."));
-  }
-
-  Tester.profiles[capitalizedName] = profile;
-};
-/*
-  Hooks,
-  {
-    name: string,
-    component: React.Component,
-    props: object || fn(), // fn() allows this.AppState to be set for e.g
-    onInit: fn(),
-    onBeforeMount: fn(),
-    shortCuts: {shortCutName: fn()},
-    wrapper: fn() => { Component: React.Component, name: string, props: object }
-  }
-
-  Note: Order is important!
-*/
-
-
-Tester.hooks = {};
-
-Tester.registerHook = function (hook) {
-  if (!hook.name) {
-    throw new Error('Tester.registerHook() : A hooks must have a name.');
-  }
-
-  if (Tester.hooks[hook.name]) {
-    throw new Error("Tester.registerHook() : A hook named \"".concat(hook.name, "\" already exist."));
-  }
-
-  Tester.hooks[hook.name] = hook;
-};
-/*
-  Create shortcuts for each global profiles
-  Tester shortcuts allows you to use a specific global profile without having to pass it in in the options.
-
-  E.g.
-  Using a new Tester.Light(MyComponent) allows you to skip the initialization of Transport, localStorage + Session and AppState.
-*/
-
-
-Object.keys(Tester.profiles).forEach(function (profileKey) {
-  Tester[profileKey] = function (TestedComponent) {
-    var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    return new Tester(TestedComponent, _objectSpread({}, opts, {
-      profile: Tester.profiles[profileKey]
-    }));
-  };
-});
-
-Tester.setEnzyme = function (passedEnzyme) {
-  enzyme = passedEnzyme;
-};
-
-module.exports = Tester;
+exports.default = Tester;
+exports.TesterConfig = TesterConfig;
