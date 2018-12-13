@@ -1,0 +1,45 @@
+{
+  "name": "tester",
+  "version": "1.0.0",
+  "description": "Bootstrap your tests!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs:prepare": "gitbook install",
+    "docs:build": "npm run docs:prepare && gitbook build",
+    "docs:watch": "npm run docs:prepare && gitbook serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mighty-justice/tester.git"
+  },
+  "keywords": [
+    "javascript",
+    "test",
+    "reactjs",
+    "react",
+    "jest",
+    "enzyme",
+    "test",
+    "utils",
+    "bootstrap",
+    "configuration"
+  ],
+  "author": "Keven Bouchard <keven@mighty.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mighty-justice/tester/issues"
+  },
+  "homepage": "https://github.com/mighty-justice/tester#readme",
+  "devDependencies": {
+    "child-process-promise": "^2.2.1",
+    "eslint": "^5.10.0",
+    "gitbook-cli": "^2.3.2",
+    "gulp": "^4.0.0",
+    "yargs": "^12.0.5"
+  },
+  "dependencies": {
+    "enzyme": "^3.8.0",
+    "react": "^16.6.3"
+  }
+}
