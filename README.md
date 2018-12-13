@@ -1,5 +1,5 @@
 # Tester
-[![npm Version](https://img.shields.io/npm/v/@mighty-justice/tester.svg)](https://www.npmjs.com/package/@mighty-justice/tester) ![Liscence MIT](https://img.shields.io/github/license/mighty-justice/tester.svg)
+[![npm Version](https://img.shields.io/npm/v/@mighty-justice/tester.svg)](https://www.npmjs.com/package/@mighty-justice/tester) [![Build Status](https://travis-ci.org/mighty-justice/tester.svg?branch=master)](https://travis-ci.org/mighty-justice/tester)
 
 Bootstrap your tests!
 
