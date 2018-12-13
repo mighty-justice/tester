@@ -133,154 +133,6 @@ function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-/*
-  Tester Configuration Class
-*/
-
-var ConfigurationClass =
-/*#__PURE__*/
-function () {
-  function ConfigurationClass(Tester) {
-    _classCallCheck(this, ConfigurationClass);
-
-    _defineProperty(this, "enzyme", void 0);
-
-    _defineProperty(this, "hooks", {});
-
-    _defineProperty(this, "profiles", {
-      // Default profile, each of it's properties can be overwritten.
-      Default: {}
-    });
-
-    _defineProperty(this, "Tester", void 0);
-
-    this.Tester = Tester;
-    Tester.Configuration = this;
-  }
-
-  _createClass(ConfigurationClass, [{
-    key: "configure",
-    value: function configure(enzyme, config) {
-      var _this = this;
-
-      this.enzyme = enzyme;
-
-      if (config.hooks) {
-        config.hooks.forEach(function (hook) {
-          _this.registerHook(hook);
-        });
-      }
-
-      if (config.profiles) {
-        config.profiles.forEach(function (profile) {
-          _this.registerProfile(profile);
-        });
-      }
-
-      this.createShortcuts(); // Make it globally accessible
-
-      global.Tester = this.Tester;
-      return this.Tester;
-    }
-    /*
-      Create shortcuts for each global profiles
-      Tester shortcuts allows you to use a specific global profile without having to pass it in in the options.
-       E.g.
-      Using a new Tester.Light(MyComponent) allows you to skip the initialization of Transport, localStorage + Session and AppState.
-    */
-
-  }, {
-    key: "createShortcuts",
-    value: function createShortcuts() {
-      var _this2 = this;
-
-      Object.keys(this.profiles).forEach(function (profileKey) {
-        _this2.Tester[profileKey] = function (TestedComponent) {
-          var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-          return new _this2.Tester(TestedComponent, _objectSpread({}, opts, {
-            profile: _this2.profiles[profileKey]
-          }));
-        };
-      });
-    }
-    /*
-      Hooks,
-      {
-        name: string,
-        component: React.Component,
-        props: object || fn(), // fn() allows this.AppState to be set for e.g
-        onInit: fn(),
-        onBeforeMount: fn(),
-        shortCuts: {shortCutName: fn()},
-        wrapper: fn() => { Component: React.Component, name: string, props: object }
-      }
-       Note: Order is important!
-    */
-
-  }, {
-    key: "registerHook",
-    value: function registerHook(hook) {
-      if (!hook.name) {
-        throw new Error('Tester.registerHook() : A hooks must have a name.');
-      }
-
-      if (this.hooks[hook.name]) {
-        throw new Error("Tester.registerHook() : A hook named \"".concat(hook.name, "\" already exist."));
-      } // Validate hook properties here.
-
-
-      this.hooks[hook.name] = hook;
-    }
-    /*
-      Profiles,
-      {
-        // Profile keys must be hook names.
-      }
-    */
-
-  }, {
-    key: "registerProfile",
-    value: function registerProfile(profile) {
-      if (!profile.name) {
-        throw new Error('Tester.registerHook() : A hooks must have a name.');
-      }
-
-      var capitalizedName = capitalize(profile.name);
-
-      if (this.profiles[capitalizedName] && capitalizedName !== 'Default') {
-        throw new Error("Tester.registerProfile() : A profile named \"".concat(capitalizedName, "\" already exist."));
-      } // Validate profile properties here.
-      //  - Does every key or the profile is a hook ?
-
-
-      this.profiles[capitalizedName] = profile;
-    }
-  }, {
-    key: "getValidHooks",
-    value: function getValidHooks(tester, hookProp) {
-      var hooks = [];
-      Object.values(this.hooks).forEach(function (hook) {
-        var valid = true;
-
-        if (!tester.profile[hook.name]) {
-          valid = false;
-        }
-
-        if (hookProp && !hook[hookProp]) {
-          valid = false;
-        }
-
-        if (valid) {
-          hooks.push(hook);
-        }
-      });
-      return hooks;
-    }
-  }]);
-
-  return ConfigurationClass;
-}();
-
 var NullComponent = function NullComponent(props) {
   return React.createElement(Fragment, props);
 };
@@ -626,6 +478,154 @@ function () {
   return Tester;
 }();
 
+/*
+  Tester Configuration Class
+*/
+
+var ConfigurationClass =
+/*#__PURE__*/
+function () {
+  function ConfigurationClass(Tester) {
+    _classCallCheck(this, ConfigurationClass);
+
+    _defineProperty(this, "enzyme", void 0);
+
+    _defineProperty(this, "hooks", {});
+
+    _defineProperty(this, "profiles", {
+      // Default profile, each of it's properties can be overwritten.
+      Default: {}
+    });
+
+    _defineProperty(this, "Tester", void 0);
+
+    this.Tester = Tester;
+    Tester.Configuration = this;
+  }
+
+  _createClass(ConfigurationClass, [{
+    key: "configure",
+    value: function configure(enzyme, config) {
+      var _this = this;
+
+      this.enzyme = enzyme;
+
+      if (config.hooks) {
+        config.hooks.forEach(function (hook) {
+          _this.registerHook(hook);
+        });
+      }
+
+      if (config.profiles) {
+        config.profiles.forEach(function (profile) {
+          _this.registerProfile(profile);
+        });
+      }
+
+      this.createShortcuts(); // Make it globally accessible
+      //global.Tester = this.Tester;
+
+      return this.Tester;
+    }
+    /*
+      Create shortcuts for each global profiles
+      Tester shortcuts allows you to use a specific global profile without having to pass it in in the options.
+       E.g.
+      Using a new Tester.Light(MyComponent) allows you to skip the initialization of Transport, localStorage + Session and AppState.
+    */
+
+  }, {
+    key: "createShortcuts",
+    value: function createShortcuts() {
+      var _this2 = this;
+
+      Object.keys(this.profiles).forEach(function (profileKey) {
+        _this2.Tester[profileKey] = function (TestedComponent) {
+          var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+          return new _this2.Tester(TestedComponent, _objectSpread({}, opts, {
+            profile: _this2.profiles[profileKey]
+          }));
+        };
+      });
+    }
+    /*
+      Hooks,
+      {
+        name: string,
+        component: React.Component,
+        props: object || fn(), // fn() allows this.AppState to be set for e.g
+        onInit: fn(),
+        onBeforeMount: fn(),
+        shortCuts: {shortCutName: fn()},
+        wrapper: fn() => { Component: React.Component, name: string, props: object }
+      }
+       Note: Order is important!
+    */
+
+  }, {
+    key: "registerHook",
+    value: function registerHook(hook) {
+      if (!hook.name) {
+        throw new Error('Tester.registerHook() : A hooks must have a name.');
+      }
+
+      if (this.hooks[hook.name]) {
+        throw new Error("Tester.registerHook() : A hook named \"".concat(hook.name, "\" already exist."));
+      } // Validate hook properties here.
+
+
+      this.hooks[hook.name] = hook;
+    }
+    /*
+      Profiles,
+      {
+        // Profile keys must be hook names.
+      }
+    */
+
+  }, {
+    key: "registerProfile",
+    value: function registerProfile(profile) {
+      if (!profile.name) {
+        throw new Error('Tester.registerHook() : A hooks must have a name.');
+      }
+
+      var capitalizedName = capitalize(profile.name);
+
+      if (this.profiles[capitalizedName] && capitalizedName !== 'Default') {
+        throw new Error("Tester.registerProfile() : A profile named \"".concat(capitalizedName, "\" already exist."));
+      } // Validate profile properties here.
+      //  - Does every key or the profile is a hook ?
+
+
+      this.profiles[capitalizedName] = profile;
+    }
+  }, {
+    key: "getValidHooks",
+    value: function getValidHooks(tester, hookProp) {
+      var hooks = [];
+      Object.values(this.hooks).forEach(function (hook) {
+        var valid = true;
+
+        if (!tester.profile[hook.name]) {
+          valid = false;
+        }
+
+        if (hookProp && !hook[hookProp]) {
+          valid = false;
+        }
+
+        if (valid) {
+          hooks.push(hook);
+        }
+      });
+      return hooks;
+    }
+  }]);
+
+  return ConfigurationClass;
+}();
+
 var TesterConfig = new ConfigurationClass(Tester);
 
-export { TesterConfig };
+export { Tester, TesterConfig };

@@ -34,9 +34,6 @@ class ConfigurationClass {
 
     this.createShortcuts();
 
-    // Make it globally accessible
-    global.Tester = this.Tester;
-
     return this.Tester;
   }
 

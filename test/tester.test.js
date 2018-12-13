@@ -1,5 +1,6 @@
-/* global it, describe, expect, Tester */
+/* global it, describe, expect */
 import React from 'react';
+import { Tester } from '../src';
 
 const COMPONENT_ID = 'testing-component';
 

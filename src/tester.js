@@ -6,8 +6,6 @@ import {
   sleep,
 } from './utils';
 
-import ConfigurationClass from './ConfigurationClass';
-
 const NullComponent = (props) => <Fragment {...props} />;
 
 
@@ -174,9 +172,4 @@ class Tester {
   }
 }
 
-const TesterConfig = new ConfigurationClass(Tester);
-
 export default Tester;
-export {
-  TesterConfig,
-};

@@ -8,7 +8,6 @@ import { TesterConfig } from '../src';
 enzyme.configure({ adapter: new Adapter() });
 
 const TestHookComponent = ({ propOne, propTwo, ...rest}) => {
-  console.log('TestHookComponent.render()', rest);
   return (<div id='test-hook-unique' ><div className='test-hook-component' {...rest} /></div>);
 };
 
@@ -28,7 +27,6 @@ TesterConfig.configure(enzyme, {
       },
       onInit: (tester) => { tester.testHookOnInit = true; },
       onBeforeMount: (tester) => { tester.testHookOnBeforeMount = true; },
-      //shortCuts: { shortCutName: fn() },
     },
   ],
   profiles: [
