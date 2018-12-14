@@ -1,12 +1,12 @@
 # Tester
 
-
-![Tester Logo](/tester_logo_125w.png?raw=true "Tester Logo")
-
+![Tester](/tester_logo_200w.png?raw=true "Tester")
 
 [![npm Version](https://img.shields.io/npm/v/@mighty-justice/tester.svg)](https://www.npmjs.com/package/@mighty-justice/tester) [![Build Status](https://travis-ci.org/mighty-justice/tester.svg?branch=master)](https://travis-ci.org/mighty-justice/tester) [![Coverage Status](https://coveralls.io/repos/github/mighty-justice/tester/badge.svg?branch=master)](https://coveralls.io/github/mighty-justice/tester?branch=master)
 
 Bootstrap your tests!
+
+(TODO : write proper intro text)
 
 ## Installation
 #### dependencies
@@ -23,7 +23,7 @@ Bootstrap your tests!
 ## Quick Start
 Tester lets you configure and bootstrap your tests the way you want to. The possibilities are endless, but here's a quick summary to get you started.
 
-In this example, we'll create a Transport hook to mock our API calls, Default to a Profile that uses that hook and test it. We'll also create a Light profile that allow us to test without the custom hook if required.
+In this example, we'll create a Transport hook to mock our API calls, default to a Profile that uses that hook and test it. We will also create a Light profile that allow us to test without the custom hook when needed.
 
 ### Configuration
 Add this to your `jestSetup.js` file.
