@@ -529,9 +529,7 @@ function () {
         });
       }
 
-      this.createShortcuts(); // Make it globally accessible
-      //global.Tester = this.Tester;
-
+      this.createShortcuts();
       return this.Tester;
     }
     /*
