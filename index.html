@@ -57,7 +57,7 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="docs/Helpers.html" />
+    <link rel="next" href="docs/Configuration.html" />
     
     
 
@@ -100,7 +100,59 @@
             
         </li>
     
-        <li class="chapter " data-level="1.2" data-path="docs/Helpers.html">
+        <li class="chapter " data-level="1.2" data-path="docs/Configuration.html">
+            
+                <a href="docs/Configuration.html">
+            
+                    
+                    Configuration
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="docs/Hooks.html">
+            
+                <a href="docs/Hooks.html">
+            
+                    
+                    Hooks
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="docs/Profiles.html">
+            
+                <a href="docs/Profiles.html">
+            
+                    
+                    Profiles
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="docs/Usage.html">
+            
+                <a href="docs/Usage.html">
+            
+                    
+                    Usage
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="docs/Helpers.html">
             
                 <a href="docs/Helpers.html">
             
@@ -171,12 +223,92 @@
 <p><code>npm install --save-dev @mighty-justice/tester</code></p>
 <h4 id="yarn">yarn</h4>
 <p><code>yarn add --dev @mighty-justice/tester</code></p>
-<h2 id="how-to-use">How to use</h2>
-<p>Lorem ipsum</p>
+<h2 id="quick-start">Quick Start</h2>
+<p>Tester lets you configure and bootstrap your tests the way you want to. The possibilities are endless, but here&apos;s a quick summary to get you started.</p>
+<p>In this example, we&apos;ll create a Transport hook to mock our API calls, Default to a Profile that uses that hook and test it. We&apos;ll also create a Light profile that allow us to test without the custom hook if required.</p>
 <h3 id="configuration">Configuration</h3>
-<p>Lorem ipsum</p>
+<p>Add this to your <code>jestSetup.js</code> file.</p>
+<pre><code class="lang-js"><span class="hljs-comment">// Import the full enzyme to pass it to Tester</span>
+<span class="hljs-keyword">import</span> enzyme <span class="hljs-keyword">from</span> <span class="hljs-string">&apos;enzyme&apos;</span>;
+<span class="hljs-comment">// Import the proper adapter, version 16 is required.</span>
+<span class="hljs-keyword">import</span> Adapter <span class="hljs-keyword">from</span> <span class="hljs-string">&apos;enzyme-adapter-react-16&apos;</span>;
+<span class="hljs-keyword">import</span> { TransportMock } <span class="hljs-keyword">from</span> <span class="hljs-string">&apos;./mocks&apos;</span>;
+<span class="hljs-keyword">import</span> { ConfigureTester } <span class="hljs-keyword">from</span> <span class="hljs-string">&apos;@mighty-justice/tester&apos;</span>;
+
+<span class="hljs-comment">// Adapt enzyme BEFORE coniguring Tester</span>
+enzyme.configure({ adapter: <span class="hljs-keyword">new</span> Adapter() });
+
+<span class="hljs-comment">// Now you can configure Tester by passing enzyme and the config object</span>
+TesterConfig.configure(enzyme, {
+    hooks: [
+      {
+        name: <span class="hljs-string">&apos;Transport&apos;</span>,
+        <span class="hljs-comment">// When the Tester is initialized, run the following</span>
+        onInit: (tester) =&gt; {
+          <span class="hljs-comment">/*
+            You can set whatever you want on the tester,
+            as long as it doesn&apos;t conflict with an existing property.
+          */</span>
+          tester.Transport = <span class="hljs-keyword">new</span> TransportMock();
+
+          <span class="hljs-comment">// You can use any options that you pass on the Tester initialization to run code.</span>
+          <span class="hljs-keyword">if</span> (tester.opts.registerEndpoints) {
+            tester.Transport.register(tester.opts.registerEndpoints);
+          }
+        },
+      },
+      ... <span class="hljs-comment">// You can add as many hooks as you want</span>
+    ],
+    profiles: [
+      {
+        name: <span class="hljs-string">&apos;Default&apos;</span>, <span class="hljs-comment">// Using Default overwrites the default profile.</span>
+        Transport: <span class="hljs-literal">true</span>, <span class="hljs-comment">// These properties MUST match hooks name for them to trigger.</span>
+      },
+      {
+        name: <span class="hljs-string">&apos;Light&apos;</span>, <span class="hljs-comment">// This creates a Tester.Light</span>
+        Transport: <span class="hljs-literal">false</span>, <span class="hljs-comment">// Disable the hook</span>
+      },
+    ],
+});
+</code></pre>
 <h3 id="usage">Usage</h3>
-<p>Lorem ipsum</p>
+<p>Now that our Tester is configured, let&apos;s test one of our components.</p>
+<pre><code class="lang-js"><span class="hljs-comment">/* global */</span>
+<span class="hljs-keyword">import</span> Button <span class="hljs-keyword">from</span> <span class="hljs-string">&apos;./button&apos;</span>:
+<span class="hljs-keyword">import</span> { Tester } <span class="hljs-keyword">from</span> <span class="hljs-string">&apos;@mighty-justice/tester&apos;</span>;
+
+describe(<span class="hljs-string">&apos;Button&apos;</span>, () =&gt; {
+  it(<span class="hljs-string">&apos;Button triggers API call&apos;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> tester = <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> Tester(
+      Button,
+      { props: { callsApiOnClick: <span class="hljs-literal">true</span> } },
+    ).mount();
+
+    expect(tester.Transport.calls.length).toBe(<span class="hljs-number">0</span>);
+    tester.component.simulate(<span class="hljs-string">&apos;click&apos;</span>);
+    expect(tester.Transport.calls.length).toBe(<span class="hljs-number">1</span>);
+  });
+
+  <span class="hljs-comment">/*
+    Here, we don&apos;t need any Api calls so we use the Light profile
+    which doesn&apos;t initialize the Transport.
+  */</span>
+  it(<span class="hljs-string">&apos;Button triggers API call&apos;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">const</span> tester = <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> Tester.Light(Button, { props: { children: <span class="hljs-string">&apos;child string&apos;</span> } }).mount();
+    expect(tester.text()).toContain(<span class="hljs-string">&apos;child string&apos;</span>);
+  });
+});
+</code></pre>
+<h3 id="helpers">Helpers</h3>
+<p>The most helpful helpers are:</p>
+<pre><code class="lang-js">tester.instance <span class="hljs-comment">// The instance of the tested component</span>
+tester.component <span class="hljs-comment">// The tested component</span>
+tester.html() <span class="hljs-comment">// Retrieve mounted component html</span>
+tester.text() <span class="hljs-comment">// Retrieve mounted component text</span>
+tester.wrapper <span class="hljs-comment">// return of the enzyme mount()</span>
+<span class="hljs-comment">// and more...</span>
+</code></pre>
+<p> Here&apos;s the full list: <a href="docs/Helpers.html">Helpers</a></p>
 <h2 id="contributing">Contributing</h2>
 <p>Not availble yet</p>
 <h2 id="in-the-wild">In the wild</h2>
@@ -210,7 +342,7 @@ Organizations and projects using <code>tester</code> can list themselves <a href
             
                 
                 
-                <a href="docs/Helpers.html" class="navigation navigation-next navigation-unique" aria-label="Next page: Helpers">
+                <a href="docs/Configuration.html" class="navigation navigation-next navigation-unique" aria-label="Next page: Configuration">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -221,7 +353,7 @@ Organizations and projects using <code>tester</code> can list themselves <a href
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Introduction","level":"1.1","depth":1,"next":{"title":"Helpers","level":"1.2","depth":1,"path":"docs/Helpers.md","ref":"docs/Helpers.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-lunr","-search","search-plus","anchorjs"],"styles":{"website":"style.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"anchorjs":{"icon":"#","placement":"left","visible":"always"},"theme-default":{"styles":{"website":"style.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2}},"theme":"default","author":"tester","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Tester documentation","gitbook":"3.2.3"},"file":{"path":"README.md","mtime":"2018-12-13T21:01:20.730Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-12-13T23:08:30.637Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Introduction","level":"1.1","depth":1,"next":{"title":"Configuration","level":"1.2","depth":1,"path":"docs/Configuration.md","ref":"docs/Configuration.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-lunr","-search","search-plus","anchorjs"],"styles":{"website":"style.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"anchorjs":{"icon":"#","placement":"left","visible":"always"},"theme-default":{"styles":{"website":"style.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"search-plus":{},"highlight":{},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2}},"theme":"default","author":"tester","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Tester documentation","gitbook":"3.2.3"},"file":{"path":"README.md","mtime":"2018-12-14T02:34:49.806Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-12-14T02:46:46.170Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
