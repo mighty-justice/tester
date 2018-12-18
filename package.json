@@ -20,7 +20,7 @@
     "docs:prepare": "gitbook install",
     "docs:build": "npm run docs:prepare && gitbook build",
     "docs:watch": "npm run docs:prepare && gitbook serve",
-    "view-source-map": "source-map-explorer --html dist/index.js dist/index.map > source.html && open source.html"
+    "view-source-map": "source-map-explorer --html dist/tester.esm.js dist/tester.esm.js.map > source.html && open source.html"
   },
   "repository": {
     "type": "git",

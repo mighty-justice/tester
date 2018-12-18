@@ -627,3 +627,4 @@ function () {
 var TesterConfig = new ConfigurationClass(Tester);
 
 export { Tester, TesterConfig };
+//# sourceMappingURL=tester.esm.js.map

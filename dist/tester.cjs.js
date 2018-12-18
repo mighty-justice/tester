@@ -635,3 +635,4 @@ var TesterConfig = new ConfigurationClass(Tester);
 
 exports.Tester = Tester;
 exports.TesterConfig = TesterConfig;
+//# sourceMappingURL=tester.cjs.js.map

@@ -12,6 +12,7 @@ export default [
       file: pkg.browser,
       format: 'umd',
       name: 'tester',
+      sourcemap: true,
     },
     // All the used libs needs to be here
     external: [
@@ -45,8 +46,8 @@ export default [
     ],
     input: 'src/index.js',
     output: [
-      { file: pkg.main, format: 'cjs' },
-      { file: pkg.module, format: 'es' },
+      { file: pkg.main, format: 'cjs', sourcemap: true },
+      { file: pkg.module, format: 'es', sourcemap: true },
     ],
     plugins: [
       resolve(), // so Rollup can find `ms`
