@@ -4,9 +4,7 @@
 
 [![npm Version](https://img.shields.io/npm/v/@mighty-justice/tester.svg)](https://www.npmjs.com/package/@mighty-justice/tester) [![Build Status](https://travis-ci.org/mighty-justice/tester.svg?branch=master)](https://travis-ci.org/mighty-justice/tester) [![Coverage Status](https://coveralls.io/repos/github/mighty-justice/tester/badge.svg?branch=master)](https://coveralls.io/github/mighty-justice/tester?branch=master)
 
-Bootstrap your tests!
-
-(TODO : write proper intro text)
+Centralize and standardize your tests with easy configuration.
 
 ## Installation
 #### dependencies
@@ -35,7 +33,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import { TransportMock } from './mocks';
 import { ConfigureTester } from '@mighty-justice/tester';
 
-// Adapt enzyme BEFORE coniguring Tester
+// Adapt enzyme BEFORE configuring Tester
 enzyme.configure({ adapter: new Adapter() });
 
 // Now you can configure Tester by passing enzyme and the config object

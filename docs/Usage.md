@@ -1,2 +1,39 @@
 # Usage
-Lorem ipsum
+One your Tester is configured, there is a couple of ways you can use it.
+
+### Multi steps
+```js
+// The Tester instance is created, onInit is called, but the TestedComponent is not mounted yet.
+const tester = new Tester(TestedComponent, { props: { color: 'blue' } });
+// We're now mounting the componnent.
+tester.mount();
+// the component is ready and we can use all the uitls available.
+tester.instance();
+tester.html();
+tester.text();
+...
+```
+
+### Awaiting for API calls to finish after mount
+```js
+/*
+  If we trigger a lot of API calls and event when mounting our TestedComponent, we can use the 'async' options when mounting it.
+*/
+const tester = new Tester(TestedComponent, { props: { color: 'blue' } });
+// This will automatically run tester.sleep(); + tester.update(); right after mounting the TestedComponent.
+await tester.mount({ async: true });
+
+// The 'async' option is a shortut for this:
+const tester = new Tester(TestedComponent, { props: { color: 'blue' } });
+tester.mount();
+await tester.sleep();
+await tester.update();
+
+```
+
+### All the shortcuts !
+```js
+const tester = await new Tester(TestedComponent, { props: { color: 'blue' } }).mount({ async: true });
+// Your TestedComponent is now mounted, it did wait for API calls to finish and updated once.
+// You can now use all the utils available.
+```

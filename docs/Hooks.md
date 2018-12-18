@@ -48,5 +48,4 @@ const tester = new Tester(TestedComponent, { profile: { LocalStorage: true } });
 ```
 
 ## Useful examples
-
-### Run action before mounting
+*Not availble yet.*
