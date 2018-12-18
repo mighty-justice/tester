@@ -3,3 +3,4 @@ _book/**
 index.js
 test/setup.js
 rollup.config.js
+babel.config.js

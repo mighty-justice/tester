@@ -1,0 +1,7 @@
+dist/
+src/
+test/
+.*
+package-lock.json
+package.json
+rollup.config.js
