@@ -9,7 +9,6 @@
     "access": "public"
   },
   "scripts": {
-    "clean": "rm -r dist/*",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "lint": "eslint src/*.js",
@@ -65,7 +64,7 @@
     "enzyme": ">=3.8"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.0",
+    "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.2.1",
     "@babel/plugin-proposal-export-default-from": "^7.2.0",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
@@ -92,7 +91,7 @@
     "react-proptypes": "^1.0.0",
     "regenerator-runtime": "^0.13.1",
     "rollup": "^0.67.4",
-    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-babel": "^4.1.0",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "source-map-explorer": "^1.6.0"
