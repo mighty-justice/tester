@@ -2,7 +2,7 @@
 
 ## Basic
 
-Basic helpers that returns what has been mounted OR are simply enzyme shortcuts.
+Basic helpers that return what has been mounted OR are simply enzyme shortcuts.
 
 ```js
 tester.instance // The instance of the tested component
@@ -22,9 +22,9 @@ tester.sleep();
 ## refresh
 ```.js
 /*
-  Calls both tester.sleep() and tester.refresh() to allow
-  waiting for an action to be fully complete.
-  e.g click + api call + render update.
+  Calls both tester.sleep() and tester.update() to
+  wait for an action to be fully complete.
+  e.g. click + api call + render update.
 */
 tester.refresh();
 ```
