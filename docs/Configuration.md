@@ -30,7 +30,8 @@ TesterConfig.configure(enzyme, {
           }
         },
       },
-      ... // You can add as many hooks as you want
+      // ...
+      // You can add as many hooks as you want
     ],
     profiles: [
       {
