@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import 'babel-polyfill';
+import '@babel/polyfill';
 import enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { TesterConfig } from '../src';

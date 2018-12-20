@@ -182,26 +182,16 @@ function () {
 
     _classCallCheck(this, Tester);
 
-    _defineProperty(this, "config", void 0);
-
-    _defineProperty(this, "initialMount", void 0);
-
-    _defineProperty(this, "onBeforeMount", void 0);
-
-    _defineProperty(this, "opts", void 0);
-
-    _defineProperty(this, "profile", void 0);
-
-    _defineProperty(this, "props", void 0);
-
-    _defineProperty(this, "shallow", void 0);
-
-    _defineProperty(this, "TestedComponent", void 0);
-
-    _defineProperty(this, "wrapper", void 0);
-
-    _defineProperty(this, "wrappers", void 0);
-
+    this.config = void 0;
+    this.initialMount = void 0;
+    this.onBeforeMount = void 0;
+    this.opts = void 0;
+    this.profile = void 0;
+    this.props = void 0;
+    this.shallow = void 0;
+    this.TestedComponent = void 0;
+    this.wrapper = void 0;
+    this.wrappers = void 0;
     this.config = this.constructor.Configuration;
     this.opts = opts;
     this.initialMount = opts.mount;
@@ -488,17 +478,13 @@ function () {
   function ConfigurationClass(Tester) {
     _classCallCheck(this, ConfigurationClass);
 
-    _defineProperty(this, "enzyme", void 0);
-
-    _defineProperty(this, "hooks", {});
-
-    _defineProperty(this, "profiles", {
+    this.enzyme = void 0;
+    this.hooks = {};
+    this.profiles = {
       // Default profile, each of it's properties can be overwritten.
       Default: {}
-    });
-
-    _defineProperty(this, "Tester", void 0);
-
+    };
+    this.Tester = void 0;
     this.Tester = Tester;
     Tester.Configuration = this;
   }

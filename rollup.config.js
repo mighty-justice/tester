@@ -1,11 +1,18 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
+import babelrc from 'babelrc-rollup';
 import pkg from './package.json';
+
+const babelConfig = {
+  ...babelrc({ addExternalHelpersPlugin: false }),
+  exclude: 'node_modules/**',
+  extensions: ['.js', '.jsx'],
+};
+
 
 export default [
   // browser-friendly UMD build
-  
   {
     input: 'src/index.js',
     output: {
@@ -22,14 +29,10 @@ export default [
     ],
     plugins: [
       resolve(), // so Rollup can find `ms`
-      babel({
-        exclude: 'node_modules/**',
-        presets: ['@babel/env', '@babel/preset-react'],
-      }),
+      babel(babelConfig),
       commonjs(), // so Rollup can convert `ms` to an ES module
     ],
   },
-  
 
   // CommonJS (for Node) and ES module (for bundlers) build.
   // (We could have three entries in the configuration array
@@ -51,10 +54,7 @@ export default [
     ],
     plugins: [
       resolve(), // so Rollup can find `ms`
-      babel({
-        exclude: 'node_modules/**',
-        presets: ['@babel/env', '@babel/preset-react'],
-      }),
+      babel(babelConfig),
       commonjs(), // so Rollup can convert `ms` to an ES module
     ],
   },

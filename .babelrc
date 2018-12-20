@@ -6,7 +6,8 @@
   "plugins": [
     "@babel/plugin-proposal-export-default-from",
     ["@babel/plugin-proposal-optional-chaining", { "loose": false }],
-    "@babel/plugin-proposal-class-properties"
+    ["@babel/plugin-proposal-class-properties", { "loose" : true }]
   ],
   "sourceMaps": "inline"
 }
+
