@@ -23,7 +23,7 @@
     "test": "jest ./test/*.js",
     "test:watch": "npm run test/*.js -- -w",
     "version": "npm run build && git add dist",
-    "view-source-map": "source-map-explorer --html dist/tester.esm.js dist/tester.esm.js.map > source.html && open source.html",
+    "view-source-map": "source-map-explorer --html dist/tester.esm.js dist/tester.esm.js.map > source.html && open source.html"
   },
   "repository": {
     "type": "git",
