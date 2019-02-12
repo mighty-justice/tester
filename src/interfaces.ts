@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Tester from './tester';
 import ConfigurationClass from './ConfigurationClass';
 
-export type ComponentClass = React.FC | { new(): Component };
+export type ComponentClass = React.FC | { new(): Component<any> };
 
 export interface IMountOps {
   async?: boolean;
@@ -44,8 +44,9 @@ export interface ITesterOps {
   TestedComponent?: Component;
 }
 
-export type TesterClass = {
+export type IBaseTesterClass = typeof Tester;
+
+export interface TesterClass extends IBaseTesterClass {
   [key: string]: any;
   Configuration: ConfigurationClass;
-  new (TestedComponent: Component, opts?: ITesterOps): Tester;
 }

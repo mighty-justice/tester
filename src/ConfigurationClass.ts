@@ -1,8 +1,6 @@
-import { Component } from 'react';
-
 import Tester from './tester';
 import { capitalize } from './utils';
-import { IConfig, IHook, IProfile, TesterClass } from './interfaces';
+import { ComponentClass, IConfig, IHook, IProfile, TesterClass } from './interfaces';
 
 /*
   Tester Configuration Class
@@ -50,7 +48,7 @@ class ConfigurationClass {
   */
   createShortcuts () {
     Object.keys(this.profiles).forEach((profileKey) => {
-      this.Tester[profileKey] = (TestedComponent: Component, opts = {}) => {
+      this.Tester[profileKey] = (TestedComponent: ComponentClass, opts = {}) => {
         return new this.Tester(TestedComponent, {...opts, profile: this.profiles[profileKey]});
       };
     });

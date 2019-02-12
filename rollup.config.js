@@ -6,7 +6,7 @@ import babelrc from 'babelrc-rollup';
 import pkg from './package.json';
 
 const name = 'tester'
-  , input = 'src/index.js'
+  , input = 'src/index.ts'
   , extensions = ['.js', '.jsx', '.ts', '.tsx']
   , babelConfig = {
     ...babelrc({ addExternalHelpersPlugin: false }),

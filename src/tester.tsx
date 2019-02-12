@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 
 import {
   getInstance,
@@ -137,7 +137,7 @@ class Tester {
 
   createShallowWrapper () {
     this.shallow = {};
-    const WrappedComponent = (this.TestedComponent as any).wrappedComponent as { new(): Component };
+    const WrappedComponent = (this.TestedComponent as any).wrappedComponent as ComponentClass;
 
     this.shallow.wrapper = this.config.enzyme.mount(
       <WrappedComponent {...this.props} { ...this.AppState} />
