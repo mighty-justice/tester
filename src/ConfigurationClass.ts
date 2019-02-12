@@ -1,27 +1,31 @@
+import { Component } from 'react';
+
+import Tester from './tester';
 import { capitalize } from './utils';
+import { IConfig, IHook, IProfile, TesterClass } from './interfaces';
 
 /*
   Tester Configuration Class
 */
 class ConfigurationClass {
-  enzyme;
-  hooks = {};
-  profiles = {
+  enzyme: any;
+  hooks: { [key: string]: IHook } = {};
+  profiles: { [key: string]: IProfile } = {
     // Default profile, each of it's properties can be overwritten.
-    Default: {},
+    Default: {} as IProfile,
   };
-  Tester;
+  Tester: TesterClass;
 
-  constructor (Tester) {
+  constructor (Tester: TesterClass) {
     this.Tester = Tester;
     Tester.Configuration = this;
   }
 
-  configure (enzyme, config) {
+  configure (enzyme: any, config: IConfig) {
     this.enzyme = enzyme;
 
     if (config.hooks) {
-      config.hooks.forEach((hook) => {
+      config.hooks.forEach((hook: IHook) => {
         this.registerHook(hook);
       });
     }
@@ -46,7 +50,7 @@ class ConfigurationClass {
   */
   createShortcuts () {
     Object.keys(this.profiles).forEach((profileKey) => {
-      this.Tester[profileKey] = (TestedComponent, opts = {}) => {
+      this.Tester[profileKey] = (TestedComponent: Component, opts = {}) => {
         return new this.Tester(TestedComponent, {...opts, profile: this.profiles[profileKey]});
       };
     });
@@ -66,7 +70,7 @@ class ConfigurationClass {
 
     Note: Order is important!
   */
-  registerHook (hook) {
+  registerHook (hook: IHook) {
     if (!hook.name) { throw new Error('Tester.registerHook() : A hooks must have a name.'); }
     if (this.hooks[hook.name]) { throw new Error(`Tester.registerHook() : A hook named "${hook.name}" already exist.`); }
 
@@ -81,7 +85,7 @@ class ConfigurationClass {
       // Profile keys must be hook names.
     }
   */
-  registerProfile (profile) {
+  registerProfile (profile: IProfile) {
     if (!profile.name) { throw new Error('Tester.registerHook() : A hooks must have a name.'); }
 
     const capitalizedName = capitalize(profile.name);
@@ -96,8 +100,8 @@ class ConfigurationClass {
     this.profiles[capitalizedName] = profile;
   }
 
-  getValidHooks (tester, hookProp) {
-    const hooks = [];
+  getValidHooks (tester: Tester, hookProp: string): IHook[] {
+    const hooks: IHook[] = [];
 
     Object.values(this.hooks).forEach((hook) => {
       let valid = true;
