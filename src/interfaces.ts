@@ -18,11 +18,11 @@ export interface IWrapper {
 
 export interface IHook extends IWrapper {
   [key: string]: any;
-  onBeforeMount: (tester: Tester, ops: IMountOps) => void;
+  onBeforeMount: (tester: Tester, mountOpts: IMountOps) => void;
   onInit: (tester: Tester) => void;
   props: object | (() => void); // fn() allows this.AppState to be set for e.g
   shortCuts: { [shortCutName: string]: () => void };
-  wrapper: () => { Component: Component, name: string, props: object };
+  wrapper: () => { Component: ComponentClass, name: string, props: object };
 }
 
 export interface IProfile {
@@ -35,13 +35,13 @@ export interface IConfig {
   profiles: IProfile[];
 }
 
-export interface ITesterOps {
+export interface ITesterOpts {
   mount?: React.ReactNode;
   onBeforeMount?: (tester: Tester) => Promise<void>;
   profile?: IProfile;
   props?: object;
   shallow?: boolean;
-  TestedComponent?: Component;
+  TestedComponent?: ComponentClass;
 }
 
 export type IBaseTesterClass = typeof Tester;

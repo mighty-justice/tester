@@ -7,9 +7,9 @@ import {
 } from './utils';
 
 import ConfigurationClass from './ConfigurationClass';
-import { IHook, IProfile, ITesterOps, IWrapper, ComponentClass } from './interfaces';
+import { IHook, IProfile, ITesterOpts, IWrapper, ComponentClass } from './interfaces';
 
-const NullComponent: React.FC<any>  = (..._props: any[]) => (<Fragment />);
+const NullComponent: React.FC<any>  = (props: any) => (<Fragment {...props} />);
 
 
 /*
@@ -49,7 +49,7 @@ const NullComponent: React.FC<any>  = (..._props: any[]) => (<Fragment />);
 class Tester {
   static Configuration: ConfigurationClass;
 
-  public opts: ITesterOps;
+  public opts: ITesterOpts;
 
   public config: ConfigurationClass;
   public initialMount: React.ReactNode;
@@ -62,7 +62,7 @@ class Tester {
   public shallow: any;
   public wrapper: any;
 
-  constructor (TestedComponent: ComponentClass, opts: ITesterOps = {}) {
+  constructor (TestedComponent: ComponentClass, opts: ITesterOpts = {}) {
     this.config = Tester.Configuration;
     this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
