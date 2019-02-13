@@ -6,7 +6,10 @@ import {
   sleep,
 } from './utils';
 
-const NullComponent = (props) => <Fragment {...props} />;
+import ConfigurationClass from './ConfigurationClass';
+import { IHook, IProfile, ITesterOpts, IWrapper, ComponentClass } from './interfaces';
+
+const NullComponent: React.FC<any>  = (props: any) => (<Fragment {...props} />);
 
 
 /*
@@ -44,22 +47,26 @@ const NullComponent = (props) => <Fragment {...props} />;
  * @returns {Tester}
  */
 class Tester {
-  config;
-  initialMount;
-  onBeforeMount;
-  opts;
-  profile;
-  props;
-  shallow;
-  TestedComponent;
-  wrapper;
-  wrappers;
+  static Configuration: ConfigurationClass;
 
-  constructor (TestedComponent, opts = {}) {
-    this.config = this.constructor.Configuration;
-    this.opts = opts;
+  public opts: ITesterOpts;
+
+  public config: ConfigurationClass;
+  public initialMount: React.ReactNode;
+  public onBeforeMount?: (tester: Tester) => Promise<void>;
+  public profile: IProfile;
+  public props: object;
+  public TestedComponent: ComponentClass;
+
+  public AppState: any;
+  public shallow: any;
+  public wrapper: any;
+
+  constructor (TestedComponent: ComponentClass, opts: ITesterOpts = {}) {
+    this.config = Tester.Configuration;
     this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
+    this.opts = opts;
     this.profile = {...this.config.profiles.Default, ...opts.profile};
     this.props = opts.props || {};
     this.TestedComponent = TestedComponent;
@@ -71,15 +78,15 @@ class Tester {
     }
 
     // Loop through hooks onInit(),
-    this.config.getValidHooks(this, 'onInit').forEach((hook) => {
+    this.config.getValidHooks(this, 'onInit').forEach((hook: IHook) => {
       hook.onInit(this);
     });
   }
 
   getWrappers () {
-    const wrappers = [];
+    const wrappers: IWrapper[] = [];
 
-    this.config.getValidHooks(this, 'component').forEach((hook) => {
+    this.config.getValidHooks(this, 'component').forEach((hook: IHook) => {
       wrappers.push({
         component: hook.component,
         name: hook.name,
@@ -111,7 +118,7 @@ class Tester {
     return this.component.text();
   }
 
-  find (selector) {
+  find (selector: string) {
     return this.wrapper.find(selector);
   }
 
@@ -119,22 +126,26 @@ class Tester {
     return this.wrapper.update();
   }
 
-  async sleep (ms) {
+  async sleep (ms?: number) {
     await sleep(ms);
   }
 
-  async refresh (ms) {
+  async refresh (ms?: number) {
     await sleep(ms);
     this.update();
   }
 
   createShallowWrapper () {
     this.shallow = {};
-    this.shallow.wrapper = this.config.enzyme.mount(<this.TestedComponent.wrappedComponent {...this.props} { ...this.AppState } />);
+    const WrappedComponent = (this.TestedComponent as any).wrappedComponent as ComponentClass;
+
+    this.shallow.wrapper = this.config.enzyme.mount(
+      <WrappedComponent {...this.props} { ...this.AppState} />
+    );
     this.shallow.instance = getInstance(this.shallow.wrapper);
   }
 
-  async mount (mountOpts = {}) {
+  async mount (mountOpts: { async?: boolean } = {}) {
 
     // Loop through hooks onBeforeMount(),
     // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
