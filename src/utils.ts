@@ -11,8 +11,8 @@ function getValue (tester: any, value: unknown) {
   return typeof value === 'function' ? value(tester) : value;
 }
 
-function sleep (ms = 0) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+async function sleep (ms: number = 0) {
+  return new Promise<void>(resolve => setTimeout(resolve, ms));
 }
 
 function capitalize (string: string) {

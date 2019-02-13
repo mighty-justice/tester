@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Tester from './tester';
 import ConfigurationClass from './ConfigurationClass';
 
-export type ComponentClass = React.FC | { new(): Component<any> };
+export type ComponentClass = React.FC | (new() => Component<any>);
 
 export interface IMountOps {
   async?: boolean;
@@ -18,7 +18,7 @@ export interface IWrapper {
 
 export interface IHook extends IWrapper {
   [key: string]: any;
-  onBeforeMount: (tester: Tester, mountOpts: IMountOps) => void;
+  onBeforeMount: (tester: Tester, mountOpts: IMountOps) => Promise<void>;
   onInit: (tester: Tester) => void;
   props: object | (() => void); // fn() allows this.AppState to be set for e.g
   shortCuts: { [shortCutName: string]: () => void };
@@ -46,7 +46,7 @@ export interface ITesterOpts {
 
 export type IBaseTesterClass = typeof Tester;
 
-export interface TesterClass extends IBaseTesterClass {
+export interface ITesterClass extends IBaseTesterClass {
   [key: string]: any;
   Configuration: ConfigurationClass;
 }

@@ -6,4 +6,4 @@ const TesterConfig = new ConfigurationClass(Tester);
 export {
   Tester,
   TesterConfig,
-}
+};

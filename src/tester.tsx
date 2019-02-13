@@ -9,8 +9,7 @@ import {
 import ConfigurationClass from './ConfigurationClass';
 import { IHook, IProfile, ITesterOpts, IWrapper, ComponentClass } from './interfaces';
 
-const NullComponent: React.FC<any>  = (props: any) => (<Fragment {...props} />);
-
+const NullComponent: React.FC<any> = (props: any) => (<Fragment {...props} />);
 
 /*
   Name: Tester
@@ -41,13 +40,9 @@ const NullComponent: React.FC<any>  = (props: any) => (<Fragment {...props} />);
 
 /**
  * Testing utility class to mount a specific component with it's required wrappers.
- *
- * @param {ReactComponent} TestedComponent
- * @param {Object} options
- * @returns {Tester}
  */
 class Tester {
-  static Configuration: ConfigurationClass;
+  public static Configuration: ConfigurationClass;
 
   public opts: ITesterOpts;
 
@@ -62,7 +57,7 @@ class Tester {
   public shallow: any;
   public wrapper: any;
 
-  constructor (TestedComponent: ComponentClass, opts: ITesterOpts = {}) {
+  public constructor (TestedComponent: ComponentClass, opts: ITesterOpts = {}) {
     this.config = Tester.Configuration;
     this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
@@ -83,7 +78,7 @@ class Tester {
     });
   }
 
-  getWrappers () {
+  public getWrappers (): IWrapper[] {
     const wrappers: IWrapper[] = [];
 
     this.config.getValidHooks(this, 'component').forEach((hook: IHook) => {
@@ -97,55 +92,55 @@ class Tester {
     return wrappers;
   }
 
-  get instance () {
+  public get instance () {
     return getInstance(this.component);
   }
 
-  get component () {
+  public get component () {
     return this.wrapper.find(this.TestedComponent);
   }
 
-  debug () {
-    // eslint-disable-next-line no-console
+  public debug () {
+    // tslint:disable-next-line:no-console
     console.log(this.wrapper.debug());
   }
 
-  html () {
+  public html () {
     return this.component.html();
   }
 
-  text () {
+  public text () {
     return this.component.text();
   }
 
-  find (selector: string) {
+  public find (selector: string) {
     return this.wrapper.find(selector);
   }
 
-  update () {
+  public update () {
     return this.wrapper.update();
   }
 
-  async sleep (ms?: number) {
+  public async sleep (ms?: number) {
     await sleep(ms);
   }
 
-  async refresh (ms?: number) {
+  public async refresh (ms?: number) {
     await sleep(ms);
     this.update();
   }
 
-  createShallowWrapper () {
+  public createShallowWrapper () {
     this.shallow = {};
     const WrappedComponent = (this.TestedComponent as any).wrappedComponent as ComponentClass;
 
     this.shallow.wrapper = this.config.enzyme.mount(
-      <WrappedComponent {...this.props} { ...this.AppState} />
+      <WrappedComponent {...this.props} { ...this.AppState} />,
     );
     this.shallow.instance = getInstance(this.shallow.wrapper);
   }
 
-  async mount (mountOpts: { async?: boolean } = {}) {
+  public async mount (mountOpts: { async?: boolean } = {}) {
 
     // Loop through hooks onBeforeMount(),
     // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
@@ -160,7 +155,7 @@ class Tester {
 
     const initialMount = this.initialMount || <this.TestedComponent {...this.props} />;
 
-    const WrapperTree = this.getWrappers().reduce((Tree, wrapper) => {
+    const WrapperTree = this.getWrappers().reduce<any>((Tree, wrapper) => {
       const wrapperChildren = wrapper.renderChildren !== false && Tree;
       if (wrapper.props) {
         return <wrapper.component {...wrapper.props}>{wrapperChildren}</wrapper.component>;
