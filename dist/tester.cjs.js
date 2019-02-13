@@ -189,20 +189,20 @@ function () {
 
     _classCallCheck(this, Tester);
 
+    this.opts = void 0;
     this.config = void 0;
     this.initialMount = void 0;
     this.onBeforeMount = void 0;
-    this.opts = void 0;
     this.profile = void 0;
     this.props = void 0;
-    this.shallow = void 0;
     this.TestedComponent = void 0;
+    this.AppState = void 0;
+    this.shallow = void 0;
     this.wrapper = void 0;
-    this.wrappers = void 0;
-    this.config = this.constructor.Configuration;
-    this.opts = opts;
+    this.config = Tester.Configuration;
     this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
+    this.opts = opts;
     this.profile = _objectSpread({}, this.config.profiles.Default, opts.profile);
     this.props = opts.props || {};
     this.TestedComponent = TestedComponent; // Allow testing without a main TestedComponent. This require an initialMount.
@@ -320,7 +320,8 @@ function () {
     key: "createShallowWrapper",
     value: function createShallowWrapper() {
       this.shallow = {};
-      this.shallow.wrapper = this.config.enzyme.mount(React__default.createElement(this.TestedComponent.wrappedComponent, _extends({}, this.props, this.AppState)));
+      var WrappedComponent = this.TestedComponent.wrappedComponent;
+      this.shallow.wrapper = this.config.enzyme.mount(React__default.createElement(WrappedComponent, _extends({}, this.props, this.AppState)));
       this.shallow.instance = getInstance(this.shallow.wrapper);
     }
   }, {
@@ -475,10 +476,11 @@ function () {
   return Tester;
 }();
 
+Tester.Configuration = void 0;
+
 /*
   Tester Configuration Class
 */
-
 var ConfigurationClass =
 /*#__PURE__*/
 function () {
