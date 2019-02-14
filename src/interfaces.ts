@@ -18,11 +18,11 @@ export interface IWrapper {
 
 export interface IHook extends IWrapper {
   [key: string]: any;
-  onBeforeMount: (tester: Tester, mountOpts: IMountOps) => Promise<void>;
+  onBeforeMount: (tester: Tester, mountOpts?: IMountOps) => void | Promise<void>;
   onInit: (tester: Tester) => void;
   props: object | (() => void); // fn() allows this.AppState to be set for e.g
-  shortCuts: { [shortCutName: string]: () => void };
-  wrapper: () => { Component: ComponentClass, name: string, props: object };
+  shortCuts?: { [shortCutName: string]: () => void };
+  wrapper?: () => { Component: ComponentClass, name: string, props: object };
 }
 
 export interface IProfile {

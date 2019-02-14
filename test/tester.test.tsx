@@ -4,8 +4,7 @@ import { Tester } from '../src';
 
 const COMPONENT_ID = 'testing-component';
 
-const MyTestingComponent = (props) => <div id={COMPONENT_ID} {...props} />;
-
+const MyTestingComponent = (props: any) => <div id={COMPONENT_ID} {...props} />;
 
 describe('Tester', () => {
 
