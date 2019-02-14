@@ -22,8 +22,8 @@
     "lint": "tslint --project .",
     "postpublish": "npm run docs:build && npm run docs:deploy",
     "preversion": "npm run lint",
-    "test": "jest ./test/*.js",
-    "test:watch": "npm run test/*.js -- -w",
+    "test": "jest",
+    "test:watch": "npm run -w",
     "version": "npm run build && git add dist",
     "view-source-map": "source-map-explorer --html dist/tester.esm.js dist/tester.esm.js.map > source.html && open source.html"
   },
@@ -62,7 +62,9 @@
       "ts",
       "tsx"
     ],
-    "setupTestFrameworkScriptFile": "./test/setup.js",
+    "setupFilesAfterEnv": [
+      "./test/setup.tsx"
+    ],
     "testURL": "http://localhost/"
   },
   "files": [
@@ -84,16 +86,15 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.1.0",
     "@mighty-justice/tslint-config": "^0.3.0",
-    "@types/react": "^16.8.2",
+    "@types/enzyme": "^3.1.18",
+    "@types/enzyme-adapter-react-16": "^1.0.4",
+    "@types/jest": "^24.0.5",
+    "@types/react": "^16.8.3",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
     "babelrc-rollup": "^3.0.0",
     "coveralls": "^3.0.2",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.6.0",
-    "eslint": "^5.10.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-react": "^7.11.1",
     "gh-pages": "^2.0.1",
     "gitbook-cli": "^2.3.2",
     "gitbook-plugin-anchorjs": "^2.1.0",
