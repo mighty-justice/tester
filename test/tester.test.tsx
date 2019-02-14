@@ -15,7 +15,7 @@ describe('Tester', () => {
   });
 
   it('Init tests TestHook', async () => {
-    const tester = await new Tester.TestProfile(MyTestingComponent).mount();
+    const tester = await new (Tester as any).TestProfile(MyTestingComponent).mount();
     expect(tester.wrapper).toBeTruthy();
     expect(tester.wrapper.html()).toContain('test-hook-component');
   });
