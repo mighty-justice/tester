@@ -15,7 +15,7 @@ export interface IWrapper {
 }
 export interface IHook extends IWrapper {
     [key: string]: any;
-    onBeforeMount: (tester: Tester, mountOpts: IMountOps) => void;
+    onBeforeMount: (tester: Tester, mountOpts: IMountOps) => Promise<void>;
     onInit: (tester: Tester) => void;
     props: object | (() => void);
     shortCuts: {
