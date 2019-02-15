@@ -3,11 +3,14 @@ import React, { Fragment } from 'react';
 import {
   getInstance,
   getValue,
+  isString,
   sleep,
 } from './utils';
 
 import ConfigurationClass from './ConfigurationClass';
 import { IHook, IProfile, ITesterOpts, IWrapper, ComponentClass } from './interfaces';
+
+type ISelectArg = string | { simulate: (event: string) => void };
 
 const NullComponent: React.FC<any> = (props: any) => (<Fragment {...props} />);
 
@@ -128,6 +131,28 @@ class Tester {
   public async refresh (ms?: number) {
     await sleep(ms);
     this.update();
+  }
+
+  private getComponent (selector: ISelectArg) {
+    return isString(selector) ? this.find(selector).first() : selector;
+  }
+
+  public changeInput (selector: ISelectArg, value: string) {
+    const component = this.getComponent(selector);
+    component.simulate('focus');
+    component.simulate('change', { target: { value } });
+    component.simulate('blur');
+  }
+
+  public click (selector: ISelectArg) {
+    const component = this.getComponent(selector);
+    component.simulate('click');
+  }
+
+  public async submit (selector: ISelectArg = 'form') {
+    const component = this.getComponent(selector);
+    component.simulate('submit');
+    await this.refresh();
   }
 
   public createShallowWrapper () {
