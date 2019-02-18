@@ -1,5 +1,5 @@
-declare function getInstance(component: any): any;
-declare function getValue(tester: any, value: unknown): any;
-declare function sleep(ms?: number): Promise<{}>;
-declare function capitalize(string: string): string;
-export { capitalize, getInstance, getValue, sleep, };
+export declare function getInstance(component: any): any;
+export declare function getValue(tester: any, value: unknown): any;
+export declare function sleep(ms?: number): Promise<void>;
+export declare function capitalize(string: string): string;
+export declare function isString(value: unknown): value is string;

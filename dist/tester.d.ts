@@ -1,12 +1,11 @@
 import React from 'react';
 import ConfigurationClass from './ConfigurationClass';
 import { IProfile, ITesterOpts, IWrapper, ComponentClass } from './interfaces';
+declare type ISelectArg = string | {
+    simulate: (event: string) => void;
+};
 /**
  * Testing utility class to mount a specific component with it's required wrappers.
- *
- * @param {ReactComponent} TestedComponent
- * @param {Object} options
- * @returns {Tester}
  */
 declare class Tester {
     static Configuration: ConfigurationClass;
@@ -31,6 +30,10 @@ declare class Tester {
     update(): any;
     sleep(ms?: number): Promise<void>;
     refresh(ms?: number): Promise<void>;
+    private getComponent;
+    changeInput(selector: ISelectArg, value: string): void;
+    click(selector: ISelectArg): void;
+    submit(selector?: ISelectArg): Promise<void>;
     createShallowWrapper(): void;
     mount(mountOpts?: {
         async?: boolean;

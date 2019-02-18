@@ -1,5 +1,5 @@
 import Tester from './tester';
-import { IConfig, IHook, IProfile, TesterClass } from './interfaces';
+import { IConfig, IHook, IProfile, ITesterClass } from './interfaces';
 declare class ConfigurationClass {
     enzyme: any;
     hooks: {
@@ -8,9 +8,9 @@ declare class ConfigurationClass {
     profiles: {
         [key: string]: IProfile;
     };
-    Tester: TesterClass;
-    constructor(Tester: TesterClass);
-    configure(enzyme: any, config: IConfig): TesterClass;
+    Tester: ITesterClass;
+    constructor(argTester: ITesterClass);
+    configure(enzyme: any, config: IConfig): ITesterClass;
     createShortcuts(): void;
     registerHook(hook: IHook): void;
     registerProfile(profile: IProfile): void;

@@ -123,20 +123,43 @@
     var instance = component.instance();
     return instance.wrappedInstance || instance;
   }
-
   function getValue(tester, value) {
     return typeof value === 'function' ? value(tester) : value;
   }
-
   function sleep() {
-    var ms = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    return new Promise(function (resolve) {
-      return setTimeout(resolve, ms);
-    });
+    return _sleep.apply(this, arguments);
+  }
+
+  function _sleep() {
+    _sleep = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee() {
+      var ms,
+          _args = arguments;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              ms = _args.length > 0 && _args[0] !== undefined ? _args[0] : 0;
+              return _context.abrupt("return", new Promise(function (resolve) {
+                return setTimeout(resolve, ms);
+              }));
+
+            case 2:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    }));
+    return _sleep.apply(this, arguments);
   }
 
   function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  function isString(value) {
+    return typeof value === 'string' || value instanceof String;
   }
 
   var NullComponent = function NullComponent(props) {
@@ -171,10 +194,6 @@
 
   /**
    * Testing utility class to mount a specific component with it's required wrappers.
-   *
-   * @param {ReactComponent} TestedComponent
-   * @param {Object} options
-   * @returns {Tester}
    */
 
 
@@ -235,7 +254,7 @@
     }, {
       key: "debug",
       value: function debug() {
-        // eslint-disable-next-line no-console
+        // tslint:disable-next-line:no-console
         console.log(this.wrapper.debug());
       }
     }, {
@@ -316,6 +335,62 @@
         return refresh;
       }()
     }, {
+      key: "getComponent",
+      value: function getComponent(selector) {
+        return isString(selector) ? this.find(selector).first() : selector;
+      }
+    }, {
+      key: "changeInput",
+      value: function changeInput(selector, value) {
+        var component = this.getComponent(selector);
+        component.simulate('focus');
+        component.simulate('change', {
+          target: {
+            value: value
+          }
+        });
+        component.simulate('blur');
+      }
+    }, {
+      key: "click",
+      value: function click(selector) {
+        var component = this.getComponent(selector);
+        component.simulate('click');
+      }
+    }, {
+      key: "submit",
+      value: function () {
+        var _submit = _asyncToGenerator(
+        /*#__PURE__*/
+        regeneratorRuntime.mark(function _callee3() {
+          var selector,
+              component,
+              _args3 = arguments;
+          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  selector = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : 'form';
+                  component = this.getComponent(selector);
+                  component.simulate('submit');
+                  _context3.next = 5;
+                  return this.refresh();
+
+                case 5:
+                case "end":
+                  return _context3.stop();
+              }
+            }
+          }, _callee3, this);
+        }));
+
+        function submit() {
+          return _submit.apply(this, arguments);
+        }
+
+        return submit;
+      }()
+    }, {
       key: "createShallowWrapper",
       value: function createShallowWrapper() {
         this.shallow = {};
@@ -328,7 +403,7 @@
       value: function () {
         var _mount = _asyncToGenerator(
         /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee3() {
+        regeneratorRuntime.mark(function _callee4() {
           var mountOpts,
               _iteratorNormalCompletion,
               _didIteratorError,
@@ -338,77 +413,77 @@
               hook,
               initialMount,
               WrapperTree,
-              _args3 = arguments;
+              _args4 = arguments;
 
-          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
-              switch (_context3.prev = _context3.next) {
+              switch (_context4.prev = _context4.next) {
                 case 0:
-                  mountOpts = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : {};
+                  mountOpts = _args4.length > 0 && _args4[0] !== undefined ? _args4[0] : {};
                   // Loop through hooks onBeforeMount(),
                   // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
                   _iteratorNormalCompletion = true;
                   _didIteratorError = false;
                   _iteratorError = undefined;
-                  _context3.prev = 4;
+                  _context4.prev = 4;
                   _iterator = this.config.getValidHooks(this, 'onBeforeMount')[Symbol.iterator]();
 
                 case 6:
                   if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                    _context3.next = 13;
+                    _context4.next = 13;
                     break;
                   }
 
                   hook = _step.value;
-                  _context3.next = 10;
+                  _context4.next = 10;
                   return hook.onBeforeMount(this, mountOpts);
 
                 case 10:
                   _iteratorNormalCompletion = true;
-                  _context3.next = 6;
+                  _context4.next = 6;
                   break;
 
                 case 13:
-                  _context3.next = 19;
+                  _context4.next = 19;
                   break;
 
                 case 15:
-                  _context3.prev = 15;
-                  _context3.t0 = _context3["catch"](4);
+                  _context4.prev = 15;
+                  _context4.t0 = _context4["catch"](4);
                   _didIteratorError = true;
-                  _iteratorError = _context3.t0;
+                  _iteratorError = _context4.t0;
 
                 case 19:
-                  _context3.prev = 19;
-                  _context3.prev = 20;
+                  _context4.prev = 19;
+                  _context4.prev = 20;
 
                   if (!_iteratorNormalCompletion && _iterator.return != null) {
                     _iterator.return();
                   }
 
                 case 22:
-                  _context3.prev = 22;
+                  _context4.prev = 22;
 
                   if (!_didIteratorError) {
-                    _context3.next = 25;
+                    _context4.next = 25;
                     break;
                   }
 
                   throw _iteratorError;
 
                 case 25:
-                  return _context3.finish(22);
+                  return _context4.finish(22);
 
                 case 26:
-                  return _context3.finish(19);
+                  return _context4.finish(19);
 
                 case 27:
                   if (!this.onBeforeMount) {
-                    _context3.next = 30;
+                    _context4.next = 30;
                     break;
                   }
 
-                  _context3.next = 30;
+                  _context4.next = 30;
                   return this.onBeforeMount(this);
 
                 case 30:
@@ -422,36 +497,36 @@
 
                     return Tree;
                   }, initialMount);
-                  _context3.next = 34;
+                  _context4.next = 34;
                   return this.config.enzyme.mount(WrapperTree);
 
                 case 34:
-                  this.wrapper = _context3.sent;
+                  this.wrapper = _context4.sent;
 
                   if (this.opts.shallow) {
                     this.createShallowWrapper();
                   }
 
                   if (!mountOpts.async) {
-                    _context3.next = 40;
+                    _context4.next = 40;
                     break;
                   }
 
-                  _context3.next = 39;
+                  _context4.next = 39;
                   return this.sleep();
 
                 case 39:
                   this.update();
 
                 case 40:
-                  return _context3.abrupt("return", this);
+                  return _context4.abrupt("return", this);
 
                 case 41:
                 case "end":
-                  return _context3.stop();
+                  return _context4.stop();
               }
             }
-          }, _callee3, this, [[4, 15, 19, 27], [20,, 22, 26]]);
+          }, _callee4, this, [[4, 15, 19, 27], [20,, 22, 26]]);
         }));
 
         function mount() {
@@ -483,7 +558,7 @@
   var ConfigurationClass =
   /*#__PURE__*/
   function () {
-    function ConfigurationClass(Tester) {
+    function ConfigurationClass(argTester) {
       _classCallCheck(this, ConfigurationClass);
 
       this.enzyme = void 0;
@@ -493,8 +568,8 @@
         Default: {}
       };
       this.Tester = void 0;
-      this.Tester = Tester;
-      Tester.Configuration = this;
+      this.Tester = argTester;
+      argTester.Configuration = this;
     }
 
     _createClass(ConfigurationClass, [{
@@ -523,7 +598,8 @@
         Create shortcuts for each global profiles
         Tester shortcuts allows you to use a specific global profile without having to pass it in in the options.
          E.g.
-        Using a new Tester.Light(MyComponent) allows you to skip the initialization of Transport, localStorage + Session and AppState.
+        Using a new Tester.Light(MyComponent) allows you to skip the initialization of
+        Transport, localStorage + Session and AppState.
       */
 
     }, {

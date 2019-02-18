@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import Tester from './tester';
 import ConfigurationClass from './ConfigurationClass';
-export declare type ComponentClass = React.FC | {
-    new (): Component<any>;
-};
+export declare type ComponentClass = React.FC | (new () => Component<any>);
 export interface IMountOps {
     async?: boolean;
 }
@@ -15,13 +13,13 @@ export interface IWrapper {
 }
 export interface IHook extends IWrapper {
     [key: string]: any;
-    onBeforeMount: (tester: Tester, mountOpts: IMountOps) => Promise<void>;
+    onBeforeMount: (tester: Tester, mountOpts?: IMountOps) => void | Promise<void>;
     onInit: (tester: Tester) => void;
     props: object | (() => void);
-    shortCuts: {
+    shortCuts?: {
         [shortCutName: string]: () => void;
     };
-    wrapper: () => {
+    wrapper?: () => {
         Component: ComponentClass;
         name: string;
         props: object;
@@ -44,7 +42,7 @@ export interface ITesterOpts {
     TestedComponent?: ComponentClass;
 }
 export declare type IBaseTesterClass = typeof Tester;
-export interface TesterClass extends IBaseTesterClass {
+export interface ITesterClass extends IBaseTesterClass {
     [key: string]: any;
     Configuration: ConfigurationClass;
 }
