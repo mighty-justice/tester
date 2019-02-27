@@ -5,6 +5,7 @@
   "main": "dist/tester.cjs.js",
   "module": "dist/tester.esm.js",
   "browser": "dist/tester.umd.js",
+  "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
