@@ -3,27 +3,30 @@ import React, { Component } from 'react';
 import Tester from './tester';
 import ConfigurationClass from './ConfigurationClass';
 
-export type ComponentClass = React.FC | (new() => Component<any>);
+export type ComponentClass = React.FC | (new (props: any) => Component<any>);
 
 export interface IMountOps {
   async?: boolean;
 }
 
-export interface IWrapper {
-  component: ComponentClass;
+export type IOnBeforeMount = (tester: Tester, mountOpts?: IMountOps) => void | Promise<void>;
+export type IOnInit = (tester: Tester) => void;
+
+export interface IBaseHook {
+  [key: string]: any;
   name: string;
-  props: object;
+  onBeforeMount?: IOnBeforeMount;
+  onInit?: IOnInit;
+  shortCuts?: { [shortCutName: string]: () => void };
+}
+
+export interface IWrapper extends IBaseHook {
+  component: ComponentClass;
+  props?: object | (() => void); // fn() allows this.AppState to be set for e.g
   renderChildren?: boolean;
 }
 
-export interface IHook extends IWrapper {
-  [key: string]: any;
-  onBeforeMount: (tester: Tester, mountOpts?: IMountOps) => void | Promise<void>;
-  onInit: (tester: Tester) => void;
-  props: object | (() => void); // fn() allows this.AppState to be set for e.g
-  shortCuts?: { [shortCutName: string]: () => void };
-  wrapper?: () => { Component: ComponentClass, name: string, props: object };
-}
+export type IHook = IBaseHook | IWrapper;
 
 export interface IProfile {
   [key: string]: boolean | string;

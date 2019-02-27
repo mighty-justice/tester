@@ -8,7 +8,7 @@ import {
 } from './utils';
 
 import ConfigurationClass from './ConfigurationClass';
-import { IHook, IProfile, ITesterOpts, IWrapper, ComponentClass } from './interfaces';
+import { IHook, IProfile, ITesterOpts, IWrapper, ComponentClass, IOnInit, IOnBeforeMount } from './interfaces';
 
 type ISelectArg = string | { simulate: (event: string) => void };
 
@@ -76,9 +76,8 @@ class Tester {
     }
 
     // Loop through hooks onInit(),
-    this.config.getValidHooks(this, 'onInit').forEach((hook: IHook) => {
-      hook.onInit(this);
-    });
+    const validHooks = this.config.getValidHooks(this, 'onInit') as Array<IHook & { onInit: IOnInit }>;
+    validHooks.forEach(hook => hook.onInit(this));
   }
 
   public getWrappers (): IWrapper[] {
@@ -169,7 +168,9 @@ class Tester {
 
     // Loop through hooks onBeforeMount(),
     // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
-    for (const hook of this.config.getValidHooks(this, 'onBeforeMount')) {
+    type IValidHook = IHook & { onBeforeMount: IOnBeforeMount };
+    const validHooks = this.config.getValidHooks(this, 'onBeforeMount') as IValidHook[];
+    for (const hook of validHooks) {
       await hook.onBeforeMount(this, mountOpts);
     }
 
