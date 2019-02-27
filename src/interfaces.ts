@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Tester from './tester';
 import ConfigurationClass from './ConfigurationClass';
 
-export type ComponentClass = React.FC | (new() => Component<any>);
+export type ComponentClass = React.FC | (new (props: any) => Component<any>);
 
 export interface IMountOps {
   async?: boolean;
