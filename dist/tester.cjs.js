@@ -232,8 +232,9 @@ function () {
     } // Loop through hooks onInit(),
 
 
-    this.config.getValidHooks(this, 'onInit').forEach(function (hook) {
-      hook.onInit(_this);
+    var validHooks = this.config.getValidHooks(this, 'onInit');
+    validHooks.forEach(function (hook) {
+      return hook.onInit(_this);
     });
   }
 
@@ -406,6 +407,7 @@ function () {
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee4() {
         var mountOpts,
+            validHooks,
             _iteratorNormalCompletion,
             _didIteratorError,
             _iteratorError,
@@ -421,73 +423,72 @@ function () {
             switch (_context4.prev = _context4.next) {
               case 0:
                 mountOpts = _args4.length > 0 && _args4[0] !== undefined ? _args4[0] : {};
-                // Loop through hooks onBeforeMount(),
-                // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
+                validHooks = this.config.getValidHooks(this, 'onBeforeMount');
                 _iteratorNormalCompletion = true;
                 _didIteratorError = false;
                 _iteratorError = undefined;
-                _context4.prev = 4;
-                _iterator = this.config.getValidHooks(this, 'onBeforeMount')[Symbol.iterator]();
+                _context4.prev = 5;
+                _iterator = validHooks[Symbol.iterator]();
 
-              case 6:
+              case 7:
                 if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                  _context4.next = 13;
+                  _context4.next = 14;
                   break;
                 }
 
                 hook = _step.value;
-                _context4.next = 10;
+                _context4.next = 11;
                 return hook.onBeforeMount(this, mountOpts);
 
-              case 10:
+              case 11:
                 _iteratorNormalCompletion = true;
-                _context4.next = 6;
+                _context4.next = 7;
                 break;
 
-              case 13:
-                _context4.next = 19;
+              case 14:
+                _context4.next = 20;
                 break;
 
-              case 15:
-                _context4.prev = 15;
-                _context4.t0 = _context4["catch"](4);
+              case 16:
+                _context4.prev = 16;
+                _context4.t0 = _context4["catch"](5);
                 _didIteratorError = true;
                 _iteratorError = _context4.t0;
 
-              case 19:
-                _context4.prev = 19;
+              case 20:
                 _context4.prev = 20;
+                _context4.prev = 21;
 
                 if (!_iteratorNormalCompletion && _iterator.return != null) {
                   _iterator.return();
                 }
 
-              case 22:
-                _context4.prev = 22;
+              case 23:
+                _context4.prev = 23;
 
                 if (!_didIteratorError) {
-                  _context4.next = 25;
+                  _context4.next = 26;
                   break;
                 }
 
                 throw _iteratorError;
 
-              case 25:
-                return _context4.finish(22);
-
               case 26:
-                return _context4.finish(19);
+                return _context4.finish(23);
 
               case 27:
+                return _context4.finish(20);
+
+              case 28:
                 if (!this.onBeforeMount) {
-                  _context4.next = 30;
+                  _context4.next = 31;
                   break;
                 }
 
-                _context4.next = 30;
+                _context4.next = 31;
                 return this.onBeforeMount(this);
 
-              case 30:
+              case 31:
                 initialMount = this.initialMount || React__default.createElement(this.TestedComponent, this.props);
                 WrapperTree = this.getWrappers().reduce(function (Tree, wrapper) {
                   var wrapperChildren = wrapper.renderChildren !== false && Tree;
@@ -498,10 +499,10 @@ function () {
 
                   return Tree;
                 }, initialMount);
-                _context4.next = 34;
+                _context4.next = 35;
                 return this.config.enzyme.mount(WrapperTree);
 
-              case 34:
+              case 35:
                 this.wrapper = _context4.sent;
 
                 if (this.opts.shallow) {
@@ -509,25 +510,25 @@ function () {
                 }
 
                 if (!mountOpts.async) {
-                  _context4.next = 40;
+                  _context4.next = 41;
                   break;
                 }
 
-                _context4.next = 39;
+                _context4.next = 40;
                 return this.sleep();
 
-              case 39:
+              case 40:
                 this.update();
 
-              case 40:
+              case 41:
                 return _context4.abrupt("return", this);
 
-              case 41:
+              case 42:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee4, this, [[4, 15, 19, 27], [20,, 22, 26]]);
+        }, _callee4, this, [[5, 16, 20, 28], [21,, 23, 27]]);
       }));
 
       function mount() {
