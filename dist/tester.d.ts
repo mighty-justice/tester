@@ -26,12 +26,13 @@ declare class Tester {
     debug(): void;
     html(): any;
     text(): any;
-    find(selector: string): any;
+    find(selector: string | ComponentClass): any;
     update(): any;
     sleep(ms?: number): Promise<void>;
     refresh(ms?: number): Promise<void>;
     private getComponent;
     changeInput(selector: ISelectArg, value: string): void;
+    checkBox(selector: ISelectArg, checked?: boolean): void;
     click(selector: ISelectArg): void;
     submit(selector?: ISelectArg): Promise<void>;
     createShallowWrapper(): void;

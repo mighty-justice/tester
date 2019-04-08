@@ -353,6 +353,17 @@
         component.simulate('blur');
       }
     }, {
+      key: "checkBox",
+      value: function checkBox(selector) {
+        var checked = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+        var component = this.getComponent(selector);
+        component.simulate('change', {
+          target: {
+            checked: checked
+          }
+        });
+      }
+    }, {
       key: "click",
       value: function click(selector) {
         var component = this.getComponent(selector);
