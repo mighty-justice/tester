@@ -115,7 +115,7 @@ class Tester {
     return this.component.text();
   }
 
-  public find (selector: string) {
+  public find (selector: string | ComponentClass) {
     return this.wrapper.find(selector);
   }
 
@@ -141,6 +141,11 @@ class Tester {
     component.simulate('focus');
     component.simulate('change', { target: { value } });
     component.simulate('blur');
+  }
+
+  public checkBox (selector: ISelectArg, checked = true) {
+    const component = this.getComponent(selector);
+    component.simulate('change', { target: { checked }});
   }
 
   public click (selector: ISelectArg) {
