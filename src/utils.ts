@@ -23,6 +23,6 @@ export function isString (value: unknown): value is string {
   return typeof value === 'string' || value instanceof String;
 }
 
-export function flushPromises () {
-  return new Promise((resolve, _reject) => setImmediate(resolve));
+export async function flushPromises () {
+  return new Promise<void>((resolve, _reject) => setImmediate(resolve));
 }
