@@ -201,7 +201,7 @@ class Tester {
       this.createShallowWrapper();
     }
 
-    if (mountOpts.async) {
+    if (mountOpts.async !== false) {
       // See https://github.com/enzymejs/enzyme/issues/1587
       await flushPromises();
       await this.refresh();
