@@ -44,7 +44,7 @@ describe('Tester', () => {
 
   it('Awaits async componentDidMount', async () => {
     const tester = await new Tester(AsyncComponent).mount();
-    expect(tester.wrapper.text()).toContain('done');
+    expect(tester.text()).toContain('done');
   });
 
 });
