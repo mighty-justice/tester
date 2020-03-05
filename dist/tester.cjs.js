@@ -122,7 +122,7 @@ function _objectSpread(target) {
 */
 function getInstance(component) {
   var instance = component.instance();
-  return instance.wrappedInstance || instance;
+  return instance && (instance.wrappedInstance || instance);
 }
 function getValue(tester, value) {
   return typeof value === 'function' ? value(tester) : value;
@@ -161,6 +161,31 @@ function capitalize(string) {
 }
 function isString(value) {
   return typeof value === 'string' || value instanceof String;
+}
+function flushPromises() {
+  return _flushPromises.apply(this, arguments);
+}
+
+function _flushPromises() {
+  _flushPromises = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee2() {
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            return _context2.abrupt("return", new Promise(function (resolve, _reject) {
+              return setImmediate(resolve);
+            }));
+
+          case 1:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this);
+  }));
+  return _flushPromises.apply(this, arguments);
 }
 
 var NullComponent = function NullComponent(props) {
@@ -520,21 +545,31 @@ function () {
                   this.createShallowWrapper();
                 }
 
-                if (!mountOpts.async) {
+                if (!(mountOpts.async !== false)) {
+                  _context4.next = 45;
+                  break;
+                }
+
+                if (!this.instance) {
                   _context4.next = 41;
                   break;
                 }
 
-                _context4.next = 40;
-                return this.sleep();
-
-              case 40:
-                this.update();
+                _context4.next = 41;
+                return this.instance.componentDidMount();
 
               case 41:
+                _context4.next = 43;
+                return flushPromises();
+
+              case 43:
+                _context4.next = 45;
+                return this.refresh();
+
+              case 45:
                 return _context4.abrupt("return", this);
 
-              case 42:
+              case 46:
               case "end":
                 return _context4.stop();
             }
