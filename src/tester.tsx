@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 
 import {
+  flushPromises,
   getInstance,
   getValue,
   isString,
@@ -200,9 +201,14 @@ class Tester {
       this.createShallowWrapper();
     }
 
-    if (mountOpts.async) {
-      await this.sleep();
-      this.update();
+    if (mountOpts.async !== false) {
+      if (this.instance) {
+        await this.instance.componentDidMount();
+      }
+
+      // See https://github.com/enzymejs/enzyme/issues/1587
+      await flushPromises();
+      await this.refresh();
     }
 
     return this;

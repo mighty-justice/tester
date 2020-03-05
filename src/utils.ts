@@ -4,7 +4,7 @@
 
 export function getInstance (component: any) {
   const instance = component.instance();
-  return instance.wrappedInstance || instance;
+  return instance && (instance.wrappedInstance || instance);
 }
 
 export function getValue (tester: any, value: unknown) {
@@ -21,4 +21,8 @@ export function capitalize (string: string) {
 
 export function isString (value: unknown): value is string {
   return typeof value === 'string' || value instanceof String;
+}
+
+export async function flushPromises () {
+  return new Promise<void>((resolve, _reject) => setImmediate(resolve));
 }
