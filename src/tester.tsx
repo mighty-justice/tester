@@ -202,7 +202,9 @@ class Tester {
     }
 
     if (mountOpts.async !== false) {
-      await this.instance.componentDidMount();
+      if (this.instance) {
+        await this.instance.componentDidMount();
+      }
 
       // See https://github.com/enzymejs/enzyme/issues/1587
       await flushPromises();

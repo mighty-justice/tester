@@ -4,7 +4,7 @@
 
 export function getInstance (component: any) {
   const instance = component.instance();
-  return instance.wrappedInstance || instance;
+  return instance && (instance.wrappedInstance || instance);
 }
 
 export function getValue (tester: any, value: unknown) {
