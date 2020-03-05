@@ -22,3 +22,7 @@ export function capitalize (string: string) {
 export function isString (value: unknown): value is string {
   return typeof value === 'string' || value instanceof String;
 }
+
+export function flushPromises () {
+  return new Promise((resolve, _reject) => setImmediate(resolve));
+}
