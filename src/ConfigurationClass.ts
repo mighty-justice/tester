@@ -1,6 +1,4 @@
-import Tester from './tester';
-import { capitalize } from './utils';
-import { ComponentClass, IConfig, IHook, IProfile, ITesterClass } from './interfaces';
+import { IConfig, IHook, ITesterClass } from './interfaces';
 
 /*
   Tester Configuration Class
@@ -8,10 +6,6 @@ import { ComponentClass, IConfig, IHook, IProfile, ITesterClass } from './interf
 class ConfigurationClass {
   public enzyme: any;
   public hooks: { [key: string]: IHook } = {};
-  public profiles: { [key: string]: IProfile } = {
-    // Default profile, each of it's properties can be overwritten.
-    Default: {} as IProfile,
-  };
   public Tester: ITesterClass;
 
   public constructor (argTester: ITesterClass) {
@@ -28,30 +22,7 @@ class ConfigurationClass {
       });
     }
 
-    if (config.profiles) {
-      config.profiles.forEach((profile) => {
-        this.registerProfile(profile);
-      });
-    }
-
-    this.createShortcuts();
-
     return this.Tester;
-  }
-
-  /*
-    Create shortcuts for each global profiles
-    Tester shortcuts allows you to use a specific global profile without having to pass it in in the options.
-
-    E.g.
-    Using a new Tester.Light(MyComponent) allows you to skip the initialization of
-    Transport, localStorage + Session and AppState.
-  */
-  public createShortcuts () {
-    Object.keys(this.profiles).forEach((profileKey) => {
-      this.Tester[profileKey] = (TestedComponent: ComponentClass, opts = {}) =>
-        new this.Tester(TestedComponent, {...opts, profile: this.profiles[profileKey]});
-    });
   }
 
   /*
@@ -79,33 +50,11 @@ class ConfigurationClass {
     this.hooks[hook.name] = hook;
   }
 
-  /*
-    Profiles,
-    {
-      // Profile keys must be hook names.
-    }
-  */
-  public registerProfile (profile: IProfile) {
-    if (!profile.name) { throw new Error('Tester.registerHook() : A hooks must have a name.'); }
-
-    const capitalizedName = capitalize(profile.name);
-
-    if (this.profiles[capitalizedName] && capitalizedName !== 'Default') {
-      throw new Error(`Tester.registerProfile() : A profile named "${capitalizedName}" already exist.`);
-    }
-
-    // Validate profile properties here.
-    //  - Does every key or the profile is a hook ?
-
-    this.profiles[capitalizedName] = profile;
-  }
-
-  public getValidHooks (tester: Tester, hookProp: string): IHook[] {
+  public getValidHooks (hookProp: string): IHook[] {
     const hooks: IHook[] = [];
 
     Object.values(this.hooks).forEach((hook) => {
       let valid = true;
-      if (!tester.profile[hook.name]) { valid = false; }
       if (hookProp && !hook[hookProp]) { valid = false; }
 
       if (valid) {

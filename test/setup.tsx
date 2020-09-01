@@ -24,10 +24,4 @@ TesterConfig.configure(enzyme, {
       },
     },
   ],
-  profiles: [
-    {
-      name: 'TestProfile',
-      testHook: true,
-    },
-  ],
 });

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, ComponentType } from 'react';
 
 import {
   flushPromises,
@@ -9,7 +9,7 @@ import {
 } from './utils';
 
 import ConfigurationClass from './ConfigurationClass';
-import { IHook, IProfile, ITesterOpts, IWrapper, ComponentClass, IOnInit, IOnBeforeMount } from './interfaces';
+import { IHook, ITesterOpts, IWrapper, IOnInit, IOnBeforeMount } from './interfaces';
 
 type ISelectArg = string | { simulate: (event: string) => void };
 
@@ -34,12 +34,6 @@ const NullComponent: React.FC<any> = (props: any) => (<Fragment {...props} />);
 
     // You can mount right away if no Transport or AppState modification is needed.
     const tester = await new Tester(MyComponent).mount();
-
-    // opts.shallow is an experimental feature that allows you to test the TestedComponent instance behaviors.
-    // Please only use it when necessary.
-    const tester = await new Tester(MyComponent, { shallow: true }).mount();
-      tester.shallow.wrapper // equals to shallow(<TestedComponent {...this.props} {...this.AppState} />)
-      tester.shallow.instance // equals to tester.shallow.instance()
 */
 
 /**
@@ -53,20 +47,16 @@ class Tester {
   public config: ConfigurationClass;
   public initialMount: React.ReactNode;
   public onBeforeMount?: (tester: Tester) => Promise<void>;
-  public profile: IProfile;
   public props: object;
-  public TestedComponent: ComponentClass;
+  public TestedComponent: ComponentType;
 
-  public AppState: any;
-  public shallow: any;
   public wrapper: any;
 
-  public constructor (TestedComponent: ComponentClass, opts: ITesterOpts = {}) {
+  public constructor (TestedComponent: ComponentType, opts: ITesterOpts = {}) {
     this.config = Tester.Configuration;
     this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
     this.opts = opts;
-    this.profile = {...this.config.profiles.Default, ...opts.profile};
     this.props = opts.props || {};
     this.TestedComponent = TestedComponent;
 
@@ -77,14 +67,14 @@ class Tester {
     }
 
     // Loop through hooks onInit(),
-    const validHooks = this.config.getValidHooks(this, 'onInit') as Array<IHook & { onInit: IOnInit }>;
+    const validHooks = this.config.getValidHooks('onInit') as Array<IHook & { onInit: IOnInit }>;
     validHooks.forEach(hook => hook.onInit(this));
   }
 
   public getWrappers (): IWrapper[] {
     const wrappers: IWrapper[] = [];
 
-    this.config.getValidHooks(this, 'component').forEach((hook: IHook) => {
+    this.config.getValidHooks('component').forEach((hook: IHook) => {
       wrappers.push({
         component: hook.component,
         name: hook.name,
@@ -116,7 +106,7 @@ class Tester {
     return this.component.text();
   }
 
-  public find (selector: string | ComponentClass) {
+  public find (selector: string | ComponentType) {
     return this.wrapper.find(selector);
   }
 
@@ -160,22 +150,11 @@ class Tester {
     await this.refresh();
   }
 
-  public createShallowWrapper () {
-    this.shallow = {};
-    const WrappedComponent = (this.TestedComponent as any).wrappedComponent as ComponentClass;
-
-    this.shallow.wrapper = this.config.enzyme.mount(
-      <WrappedComponent {...this.props} { ...this.AppState} />,
-    );
-    this.shallow.instance = getInstance(this.shallow.wrapper);
-  }
-
   public async mount (mountOpts: { async?: boolean } = {}) {
-
     // Loop through hooks onBeforeMount(),
     // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
     type IValidHook = IHook & { onBeforeMount: IOnBeforeMount };
-    const validHooks = this.config.getValidHooks(this, 'onBeforeMount') as IValidHook[];
+    const validHooks = this.config.getValidHooks('onBeforeMount') as IValidHook[];
     for (const hook of validHooks) {
       await hook.onBeforeMount(this, mountOpts);
     }
@@ -196,10 +175,6 @@ class Tester {
     }, initialMount);
 
     this.wrapper = await this.config.enzyme.mount(WrapperTree);
-
-    if (this.opts.shallow) {
-      this.createShallowWrapper();
-    }
 
     if (mountOpts.async !== false) {
       if (this.instance) {

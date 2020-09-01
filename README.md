@@ -21,7 +21,7 @@ Centralize and standardize your tests with easy configuration.
 ## Quick Start
 Tester lets you configure and bootstrap your tests the way you want to. The possibilities are endless, but here's a quick summary to get you started.
 
-In this example, we'll create a Transport hook to mock our API calls, default to a Profile that uses that hook and test it. We will also create a Light profile that allow us to test without the custom hook when needed.
+In this example, we'll create a Transport hook to mock our API calls and test it.
 
 ### Configuration
 Add this to your `jestSetup.js` file.
@@ -58,16 +58,6 @@ TesterConfig.configure(enzyme, {
       // ...
       // You can add as many hooks as you want
     ],
-    profiles: [
-      {
-        name: 'Default', // Using Default overwrites the default profile.
-        Transport: true, // These properties MUST match hooks name for them to trigger.
-      },
-      {
-        name: 'Light', // This creates a Tester.Light
-        Transport: false, // Disable the hook
-      },
-    ],
 });
 ```
 
@@ -89,15 +79,6 @@ describe('Button', () => {
     expect(tester.Transport.calls.length).toBe(0);
     tester.component.simulate('click');
     expect(tester.Transport.calls.length).toBe(1);
-  });
-
-  /*
-    Here, we don't need any Api calls so we use the Light profile
-    which doesn't initialize the Transport.
-  */
-  it('Button triggers API call', async () => {
-    const tester = await new Tester.Light(Button, { props: { children: 'child string' } }).mount();
-    expect(tester.text()).toContain('child string');
   });
 });
 ```

@@ -16,17 +16,11 @@
     "build:types": "tsc --emitDeclarationOnly",
     "deploy": "np",
     "dev": "rollup -c -w",
-    "docs:build": "npm run docs:prepare && gitbook build",
-    "docs:deploy": "gh-pages -d _book",
-    "docs:prepare": "gitbook install",
-    "docs:watch": "npm run docs:prepare && gitbook serve",
     "lint": "tslint --project .",
-    "postpublish": "npm run docs:build && npm run docs:deploy",
     "preversion": "npm run lint",
     "test": "jest",
     "test:watch": "npm run -w",
-    "version": "npm run build && git add dist",
-    "view-source-map": "source-map-explorer --html dist/tester.esm.js dist/tester.esm.js.map > source.html && open source.html"
+    "version": "npm run build && git add dist"
   },
   "repository": {
     "type": "git",
@@ -96,10 +90,6 @@
     "coveralls": "^3.0.2",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.6.0",
-    "gh-pages": "^2.0.1",
-    "gitbook-cli": "^2.3.2",
-    "gitbook-plugin-anchorjs": "^2.1.0",
-    "gitbook-plugin-search-plus": "^1.0.4-alpha-3",
     "jest": "^24.1.0",
     "jest-environment-jsdom": "^24.0.0",
     "np": "^4.0.2",
@@ -111,7 +101,6 @@
     "rollup-plugin-babel": "^4.1.0",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
-    "source-map-explorer": "^1.6.0",
     "tslint": "^5.12.1",
     "typescript": "^3.3.3"
   },
