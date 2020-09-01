@@ -15,10 +15,6 @@ export async function sleep (ms: number = 0) {
   return new Promise<void>(resolve => setTimeout(resolve, ms));
 }
 
-export function capitalize (string: string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 export function isString (value: unknown): value is string {
   return typeof value === 'string' || value instanceof String;
 }

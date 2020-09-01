@@ -33,21 +33,11 @@ TesterConfig.configure(enzyme, {
       // ...
       // You can add as many hooks as you want
     ],
-    profiles: [
-      {
-        name: 'Default', // Using Default overwrites the default profile.
-        Transport: true, // These properties MUST match hooks name for them to trigger.
-      },
-      {
-        name: 'Light', // This creates a Tester.Light
-        Transport: false, // Disable the hook
-      },
-    ],
 });
 ```
 
 ### Pseudo configuration example
-As you can see in the pseudo-code below, there is no limits to how many Tester Profiles / Hooks you can set.
+As you can see in the pseudo-code below, there is no limits to how many Tester Hooks you can set.
 ```js
 TesterConfig.configure(enzyme, {
     hooks: [
@@ -56,36 +46,6 @@ TesterConfig.configure(enzyme, {
       { name: 'Icons', ... },
       { name: 'SelectItemOnInit', ... },
       { name: 'ServerNotResponding', ... },
-    ],
-    profiles: [
-      {
-        name: 'Default',
-        Api: true,
-        Session: true,
-      },
-      {
-        name: 'Light',
-        Api: false,
-        Session: false,
-      },
-      {
-        name: 'Icon',
-        Api: false,
-        Session: false,
-        Icons: true,
-      },
-      {
-        name: 'SelectItem',
-        Api: true,
-        Session: true,
-        SelectItemOnInit: true,
-      },
-      {
-        name: 'NoServer',
-        Api: true,
-        Session: true,
-        ServerNotResponding: true,
-      },
     ],
 });
 ```
