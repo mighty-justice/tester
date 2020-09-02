@@ -1,19 +1,12 @@
 import React, { Fragment, ComponentType } from 'react';
 
-import {
-  flushPromises,
-  getInstance,
-  getValue,
-  isString,
-  sleep,
-} from './utils';
-
+import { flushPromises, getInstance, getValue, isString, sleep } from './utils';
 import ConfigurationClass from './ConfigurationClass';
 import { IHook, ITesterOpts, IWrapper, IOnInit, IOnBeforeMount } from './interfaces';
 
 type ISelectArg = string | { simulate: (event: string) => void };
 
-const NullComponent: React.FC<any> = (props: any) => (<Fragment {...props} />);
+const NullComponent: React.FC<any> = (props: any) => <Fragment {...props} />;
 
 /*
   Name: Tester
@@ -52,7 +45,7 @@ class Tester {
 
   public wrapper: any;
 
-  public constructor (TestedComponent: ComponentType, opts: ITesterOpts = {}) {
+  public constructor(TestedComponent: ComponentType, opts: ITesterOpts = {}) {
     this.config = Tester.Configuration;
     this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
@@ -71,7 +64,7 @@ class Tester {
     validHooks.forEach(hook => hook.onInit(this));
   }
 
-  public getWrappers (): IWrapper[] {
+  public getWrappers(): IWrapper[] {
     const wrappers: IWrapper[] = [];
 
     this.config.getValidHooks('component').forEach((hook: IHook) => {
@@ -85,72 +78,72 @@ class Tester {
     return wrappers;
   }
 
-  public get instance () {
+  public get instance() {
     return getInstance(this.component);
   }
 
-  public get component () {
+  public get component() {
     return this.wrapper.find(this.TestedComponent);
   }
 
-  public debug () {
+  public debug() {
     // tslint:disable-next-line:no-console
     console.log(this.wrapper.debug());
   }
 
-  public html () {
+  public html() {
     return this.component.html();
   }
 
-  public text () {
+  public text() {
     return this.component.text();
   }
 
-  public find (selector: string | ComponentType) {
+  public find(selector: string | ComponentType) {
     return this.wrapper.find(selector);
   }
 
-  public update () {
+  public update() {
     return this.wrapper.update();
   }
 
-  public async sleep (ms?: number) {
+  public async sleep(ms?: number) {
     await sleep(ms);
   }
 
-  public async refresh (ms?: number) {
+  public async refresh(ms?: number) {
     await sleep(ms);
     this.update();
   }
 
-  private getComponent (selector: ISelectArg) {
+  private getComponent(selector: ISelectArg) {
     return isString(selector) ? this.find(selector).first() : selector;
   }
 
-  public changeInput (selector: ISelectArg, value: string) {
+  public changeInput(selector: ISelectArg, value: string) {
     const component = this.getComponent(selector);
     component.simulate('focus');
     component.simulate('change', { target: { value } });
     component.simulate('blur');
   }
 
-  public checkBox (selector: ISelectArg, checked = true) {
+  public checkBox(selector: ISelectArg, checked = true) {
     const component = this.getComponent(selector);
-    component.simulate('change', { target: { checked }});
+    component.simulate('change', { target: { checked } });
   }
 
-  public click (selector: ISelectArg) {
+  public click(selector: ISelectArg) {
     const component = this.getComponent(selector);
     component.simulate('click');
   }
 
-  public async submit (selector: ISelectArg = 'form') {
+  public async submit(selector: ISelectArg = 'form') {
     const component = this.getComponent(selector);
     component.simulate('submit');
     await this.refresh();
   }
 
-  public async mount (mountOpts: { async?: boolean } = {}) {
+  public async mount(mountOpts: { async?: boolean } = {}) {
     // Loop through hooks onBeforeMount(),
     // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
     type IValidHook = IHook & { onBeforeMount: IOnBeforeMount };
