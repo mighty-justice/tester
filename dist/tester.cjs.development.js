@@ -1,4 +1,11 @@
-import React, { Fragment } from 'react';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var React = require('react');
+var React__default = _interopDefault(React);
 
 function _defineProperties(target, props) {
   for (var i = 0; i < props.length; i++) {
@@ -215,7 +222,7 @@ function isString(value) {
 }
 
 var NullComponent = function NullComponent(props) {
-  return React.createElement(Fragment, Object.assign({}, props));
+  return React__default.createElement(React.Fragment, Object.assign({}, props));
 };
 /*
   Name: Tester
@@ -260,7 +267,7 @@ var Tester = /*#__PURE__*/function () {
 
     if (!this.TestedComponent && this.initialMount) {
       this.TestedComponent = NullComponent;
-      this.initialMount = React.createElement(this.TestedComponent, null, this.initialMount);
+      this.initialMount = React__default.createElement(this.TestedComponent, null, this.initialMount);
     } // Loop through hooks onInit(),
 
 
@@ -385,13 +392,13 @@ var Tester = /*#__PURE__*/function () {
     try {
       var _temp8 = function _temp8() {
         function _temp5() {
-          var initialMount = _this8.initialMount || React.createElement(_this8.TestedComponent, Object.assign({}, _this8.props));
+          var initialMount = _this8.initialMount || React__default.createElement(_this8.TestedComponent, Object.assign({}, _this8.props));
 
           var WrapperTree = _this8.getWrappers().reduce(function (Tree, wrapper) {
             var wrapperChildren = wrapper.renderChildren !== false && Tree;
 
             if (wrapper.props) {
-              return React.createElement(wrapper.component, Object.assign({}, wrapper.props), wrapperChildren);
+              return React__default.createElement(wrapper.component, Object.assign({}, wrapper.props), wrapperChildren);
             }
 
             return Tree;
@@ -538,5 +545,6 @@ var ConfigurationClass = /*#__PURE__*/function () {
 
 var TesterConfig = /*#__PURE__*/new ConfigurationClass(Tester);
 
-export { Tester, TesterConfig };
-//# sourceMappingURL=tester.esm.js.map
+exports.Tester = Tester;
+exports.TesterConfig = TesterConfig;
+//# sourceMappingURL=tester.cjs.development.js.map

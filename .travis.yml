@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-  - "10"
-  - "8"
+  - "node"
+  - "lts/*"
 
 script: echo "Running tests against $(node -v)..." && yarn test
 
@@ -15,7 +15,7 @@ jobs:
       script: yarn lint
     - stage: Produce Coverage
       node_js: node
-      script: jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+      script: yarn test --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
 
 branches:
   only:

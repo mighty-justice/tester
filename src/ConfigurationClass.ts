@@ -8,12 +8,12 @@ class ConfigurationClass {
   public hooks: { [key: string]: IHook } = {};
   public Tester: ITesterClass;
 
-  public constructor (argTester: ITesterClass) {
+  public constructor(argTester: ITesterClass) {
     this.Tester = argTester;
     argTester.Configuration = this;
   }
 
-  public configure (enzyme: any, config: IConfig) {
+  public configure(enzyme: any, config: IConfig) {
     this.enzyme = enzyme;
 
     if (config.hooks) {
@@ -39,8 +39,10 @@ class ConfigurationClass {
 
     Note: Order is important!
   */
-  public registerHook (hook: IHook) {
-    if (!hook.name) { throw new Error('Tester.registerHook() : A hooks must have a name.'); }
+  public registerHook(hook: IHook) {
+    if (!hook.name) {
+      throw new Error('Tester.registerHook() : A hooks must have a name.');
+    }
     if (this.hooks[hook.name]) {
       throw new Error(`Tester.registerHook() : A hook named "${hook.name}" already exist.`);
     }
@@ -50,12 +52,14 @@ class ConfigurationClass {
     this.hooks[hook.name] = hook;
   }
 
-  public getValidHooks (hookProp: string): IHook[] {
+  public getValidHooks(hookProp: string): IHook[] {
     const hooks: IHook[] = [];
 
-    Object.values(this.hooks).forEach((hook) => {
+    Object.values(this.hooks).forEach(hook => {
       let valid = true;
-      if (hookProp && !hook[hookProp]) { valid = false; }
+      if (hookProp && !hook[hookProp]) {
+        valid = false;
+      }
 
       if (valid) {
         hooks.push(hook);
@@ -64,7 +68,6 @@ class ConfigurationClass {
 
     return hooks;
   }
-
 }
 
 export default ConfigurationClass;

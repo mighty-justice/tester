@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { ComponentType } from 'react';
 import ConfigurationClass from './ConfigurationClass';
-import { IProfile, ITesterOpts, IWrapper, ComponentClass } from './interfaces';
+import { ITesterOpts, IWrapper } from './interfaces';
 declare type ISelectArg = string | {
     simulate: (event: string) => void;
 };
@@ -13,20 +13,17 @@ declare class Tester {
     config: ConfigurationClass;
     initialMount: React.ReactNode;
     onBeforeMount?: (tester: Tester) => Promise<void>;
-    profile: IProfile;
     props: object;
-    TestedComponent: ComponentClass;
-    AppState: any;
-    shallow: any;
+    TestedComponent: ComponentType;
     wrapper: any;
-    constructor(TestedComponent: ComponentClass, opts?: ITesterOpts);
+    constructor(TestedComponent: ComponentType, opts?: ITesterOpts);
     getWrappers(): IWrapper[];
-    readonly instance: any;
-    readonly component: any;
+    get instance(): any;
+    get component(): any;
     debug(): void;
     html(): any;
     text(): any;
-    find(selector: string | ComponentClass): any;
+    find(selector: string | ComponentType): any;
     update(): any;
     sleep(ms?: number): Promise<void>;
     refresh(ms?: number): Promise<void>;
@@ -35,7 +32,6 @@ declare class Tester {
     checkBox(selector: ISelectArg, checked?: boolean): void;
     click(selector: ISelectArg): void;
     submit(selector?: ISelectArg): Promise<void>;
-    createShallowWrapper(): void;
     mount(mountOpts?: {
         async?: boolean;
     }): Promise<this>;
