@@ -9,6 +9,7 @@ export interface IMountOps {
 
 export type IOnBeforeMount = (tester: Tester, mountOpts?: IMountOps) => void | Promise<void>;
 export type IOnInit = (tester: Tester) => void;
+export type IProps = object | ((tester: Tester) => Promise<object>);
 
 export interface IBaseHook {
   [key: string]: any;
@@ -20,7 +21,7 @@ export interface IBaseHook {
 
 export interface IWrapper extends IBaseHook {
   component: ComponentType;
-  props?: object | ((tester: Tester) => Promise<void>);
+  props?: IProps;
   renderChildren?: boolean;
 }
 
@@ -33,7 +34,7 @@ export interface IConfig {
 export interface ITesterOpts {
   mount?: React.ReactNode;
   onBeforeMount?: (tester: Tester) => Promise<void>;
-  props?: object | ((tester: Tester) => Promise<object>);
+  props?: IProps;
   TestedComponent?: ComponentType;
 }
 

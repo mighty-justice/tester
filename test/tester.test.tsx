@@ -41,4 +41,13 @@ describe('Tester', () => {
     const tester = await new Tester(AsyncComponent).mount();
     expect(tester.text()).toContain('done');
   });
+
+  it('Awaits async props function', async () => {
+    const props = jest.fn(),
+      tester = await new Tester(AsyncComponent, { props });
+
+    expect(props).not.toBeCalled();
+    await tester.mount();
+    expect(props).toBeCalled();
+  });
 });

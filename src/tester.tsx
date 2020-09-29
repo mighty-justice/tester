@@ -2,7 +2,7 @@ import React, { Fragment, ComponentType } from 'react';
 
 import { flushPromises, getInstance, getValue, isString, sleep } from './utils';
 import ConfigurationClass from './ConfigurationClass';
-import { IHook, ITesterOpts, IWrapper, IOnInit, IOnBeforeMount } from './interfaces';
+import { IHook, ITesterOpts, IWrapper, IOnInit, IOnBeforeMount, IProps } from './interfaces';
 
 type ISelectArg = string | { simulate: (event: string) => void };
 
@@ -40,7 +40,7 @@ class Tester {
   public config: ConfigurationClass;
   public initialMount: React.ReactNode;
   public onBeforeMount?: (tester: Tester) => Promise<void>;
-  public props: object;
+  public props: IProps;
   public TestedComponent: ComponentType;
 
   public wrapper: any;
@@ -157,7 +157,8 @@ class Tester {
       await this.onBeforeMount(this);
     }
 
-    const initialMount = this.initialMount || <this.TestedComponent {...this.props} />;
+    const props = await getValue(this, this.props);
+    const initialMount = this.initialMount || <this.TestedComponent {...props} />;
 
     const WrapperTree = this.getWrappers().reduce<any>((Tree, wrapper) => {
       const wrapperChildren = wrapper.renderChildren !== false && Tree;
