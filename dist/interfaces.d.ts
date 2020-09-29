@@ -5,7 +5,7 @@ export interface IMountOps {
     async?: boolean;
 }
 export declare type IOnBeforeMount = (tester: Tester, mountOpts?: IMountOps) => void | Promise<void>;
-export declare type IOnInit = (tester: Tester) => void;
+export declare type IOnInit = (tester: Tester) => Promise<void>;
 export interface IBaseHook {
     [key: string]: any;
     name: string;
@@ -17,7 +17,7 @@ export interface IBaseHook {
 }
 export interface IWrapper extends IBaseHook {
     component: ComponentType;
-    props?: object | ((tester: Tester) => Promise<void>);
+    props?: object | ((tester: Tester) => Promise<object>);
     renderChildren?: boolean;
 }
 export declare type IHook = IBaseHook | IWrapper;
