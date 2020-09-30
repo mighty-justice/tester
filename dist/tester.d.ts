@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react';
 import ConfigurationClass from './ConfigurationClass';
-import { ITesterOpts, IWrapper } from './interfaces';
+import { ITesterOpts, IWrapper, IProps } from './interfaces';
 declare type ISelectArg = string | {
     simulate: (event: string) => void;
 };
@@ -13,7 +13,7 @@ declare class Tester {
     config: ConfigurationClass;
     initialMount: React.ReactNode;
     onBeforeMount?: (tester: Tester) => Promise<void>;
-    props: object;
+    props: IProps;
     TestedComponent: ComponentType;
     wrapper: any;
     constructor(TestedComponent: ComponentType, opts?: ITesterOpts);
