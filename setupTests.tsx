@@ -7,7 +7,7 @@ import { TesterConfig } from './src';
 enzyme.configure({ adapter: new Adapter() });
 
 const TestHookComponent = ({ propOne, propTwo, ...rest }: any) => (
-  <div id="test-hook-unique">
+  <div id="test-hook-unique" className={`${propOne} ${propTwo}`}>
     <div className="test-hook-component" {...rest} />
   </div>
 );
@@ -23,10 +23,10 @@ TesterConfig.configure(enzyme, {
       onInit: tester => {
         (tester as any).testHookOnInit = true;
       },
-      props: {
+      props: (_tester: any) => ({
         propOne: 'un',
         propTwo: 'deux',
-      },
+      }),
     },
   ],
 });

@@ -7,8 +7,12 @@ export function getInstance(component: any) {
   return instance && (instance.wrappedInstance || instance);
 }
 
-export async function getValue(tester: any, value: unknown) {
-  return typeof value === 'function' ? await value(tester) : value;
+export function isFunction(value: unknown): value is Function {
+  return typeof value === 'function';
+}
+
+export function getValue(tester: any, value: unknown) {
+  return isFunction(value) ? value(tester) : value;
 }
 
 export async function sleep(ms: number = 0) {

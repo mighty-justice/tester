@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { Tester } from '../src';
-import { sleep } from '../src/utils';
+import { isFunction, sleep } from '../src/utils';
+import { IProps } from '../src/interfaces';
 
 const COMPONENT_ID = 'testing-component';
 
 const MyTestingComponent = (props: any) => <div id={COMPONENT_ID} {...props} />;
 
-class AsyncComponent extends Component<{}, { status: string }> {
-  public constructor(props: object) {
+interface IAsyncComponentProps {
+  label?: string;
+}
+class AsyncComponent extends Component<IAsyncComponentProps, { status: string }> {
+  public constructor(props: IAsyncComponentProps) {
     super(props);
     this.state = { status: 'loading' };
   }
@@ -20,7 +24,12 @@ class AsyncComponent extends Component<{}, { status: string }> {
   }
 
   public render() {
-    return <div>{this.state.status}</div>;
+    return (
+      <div>
+        {this.props.label}
+        {this.state.status}
+      </div>
+    );
   }
 }
 
@@ -42,12 +51,41 @@ describe('Tester', () => {
     expect(tester.text()).toContain('done');
   });
 
-  it('Awaits async props function', async () => {
-    const props = jest.fn(),
-      tester = await new Tester(AsyncComponent, { props });
+  const label = '7a30534a-62dc-42c6-a9e9-62be0e0a713c'; // Random uuid
+  const propTypes: Array<[string, IProps]> = [
+    ['object', { label }],
+    ['function', jest.fn().mockImplementation(() => ({ label }))],
+    ['promise', jest.fn().mockResolvedValue({ label })],
+  ];
+  propTypes.forEach(([type, props]) => {
+    it(`Handles ${type} props`, async () => {
+      const tester = await new Tester(AsyncComponent, { props });
 
-    expect(props).not.toBeCalled();
+      if (isFunction(props)) {
+        expect(props).not.toBeCalled();
+      }
+
+      await tester.mount();
+
+      if (isFunction(props)) {
+        expect(props).toBeCalled();
+      }
+      expect(tester.text()).toContain(label);
+    });
+  });
+
+  it('Properly calls hooks from setupTests.ts', async () => {
+    const tester = await new Tester(AsyncComponent);
+
+    expect(!!(tester as any).testHookOnInit).toBe(true);
+    expect(!!(tester as any).testHookOnBeforeMount).toBe(false);
+
     await tester.mount();
-    expect(props).toBeCalled();
+
+    expect(!!(tester as any).testHookOnInit).toBe(true);
+    expect(!!(tester as any).testHookOnBeforeMount).toBe(true);
+
+    expect(tester.find('#test-hook-unique').length).toBe(1);
+    expect(tester.find('.un.deux').length).toBe(1);
   });
 });
