@@ -855,69 +855,36 @@ function getInstance(component) {
   var instance = component.instance();
   return instance && (instance.wrappedInstance || instance);
 }
-function getValue(_x, _x2) {
-  return _getValue.apply(this, arguments);
+function isFunction(value) {
+  return typeof value === 'function';
 }
-
-function _getValue() {
-  _getValue = _asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee(tester, value) {
-    return runtime_1.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            if (!(typeof value === 'function')) {
-              _context.next = 6;
-              break;
-            }
-
-            _context.next = 3;
-            return value(tester);
-
-          case 3:
-            _context.t0 = _context.sent;
-            _context.next = 7;
-            break;
-
-          case 6:
-            _context.t0 = value;
-
-          case 7:
-            return _context.abrupt("return", _context.t0);
-
-          case 8:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-  return _getValue.apply(this, arguments);
+function getValue(tester, value) {
+  return isFunction(value) ? value(tester) : value;
 }
-
-function sleep(_x3) {
+function sleep(_x) {
   return _sleep.apply(this, arguments);
 }
 
 function _sleep() {
-  _sleep = _asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee2(ms) {
-    return runtime_1.wrap(function _callee2$(_context2) {
+  _sleep = _asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee(ms) {
+    return runtime_1.wrap(function _callee$(_context) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context.prev = _context.next) {
           case 0:
             if (ms === void 0) {
               ms = 0;
             }
 
-            return _context2.abrupt("return", new Promise(function (resolve) {
+            return _context.abrupt("return", new Promise(function (resolve) {
               return setTimeout(resolve, ms);
             }));
 
           case 2:
           case "end":
-            return _context2.stop();
+            return _context.stop();
         }
       }
-    }, _callee2);
+    }, _callee);
   }));
   return _sleep.apply(this, arguments);
 }
@@ -930,21 +897,21 @@ function flushPromises() {
 }
 
 function _flushPromises() {
-  _flushPromises = _asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee3() {
-    return runtime_1.wrap(function _callee3$(_context3) {
+  _flushPromises = _asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee2() {
+    return runtime_1.wrap(function _callee2$(_context2) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context2.prev = _context2.next) {
           case 0:
-            return _context3.abrupt("return", new Promise(function (resolve, _reject) {
+            return _context2.abrupt("return", new Promise(function (resolve, _reject) {
               return setImmediate(resolve);
             }));
 
           case 1:
           case "end":
-            return _context3.stop();
+            return _context2.stop();
         }
       }
-    }, _callee3);
+    }, _callee2);
   }));
   return _flushPromises.apply(this, arguments);
 }
