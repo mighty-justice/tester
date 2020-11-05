@@ -41,11 +41,11 @@ class Tester {
   public initialMount: React.ReactNode;
   public onBeforeMount?: (tester: Tester) => Promise<void>;
   public props: IProps;
-  public TestedComponent: ComponentType;
+  public TestedComponent: ComponentType<any>;
 
   public wrapper: any;
 
-  public constructor(TestedComponent: ComponentType, opts: ITesterOpts = {}) {
+  public constructor(TestedComponent: ComponentType<any>, opts: ITesterOpts = {}) {
     this.config = Tester.Configuration;
     this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
@@ -99,7 +99,7 @@ class Tester {
     return this.component.text();
   }
 
-  public find(selector: string | ComponentType) {
+  public find(selector: string | ComponentType<any>) {
     return this.wrapper.find(selector);
   }
 

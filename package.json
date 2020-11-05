@@ -10,6 +10,7 @@
     "access": "public"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'dist/*.js'",
     "build": "tsdx build",
     "deploy": "np",
     "format": "tsdx lint --fix",
@@ -69,6 +70,7 @@
     "np": "^5.0.0",
     "react": "^16.13.1",
     "react-dom": ">=16.13.1",
+    "source-map-explorer": "^2.5.0",
     "tsdx": "^0.14.0",
     "typescript": "^3"
   },
