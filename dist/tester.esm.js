@@ -1312,5 +1312,5 @@ var ConfigurationClass = /*#__PURE__*/function () {
 
 var TesterConfig = /*#__PURE__*/new ConfigurationClass(Tester);
 
-export { Tester, TesterConfig };
+export { Tester, TesterConfig, flushPromises, getInstance, getValue, isFunction, isString, sleep };
 //# sourceMappingURL=tester.esm.js.map

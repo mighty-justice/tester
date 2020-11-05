@@ -17,7 +17,7 @@ export interface IBaseHook {
     };
 }
 export interface IWrapper extends IBaseHook {
-    component: ComponentType;
+    component: ComponentType<any>;
     props?: IProps;
     renderChildren?: boolean;
 }
@@ -29,7 +29,7 @@ export interface ITesterOpts {
     mount?: React.ReactNode;
     onBeforeMount?: (tester: Tester) => Promise<void>;
     props?: IProps;
-    TestedComponent?: ComponentType;
+    TestedComponent?: ComponentType<any>;
 }
 export declare type IBaseTesterClass = typeof Tester;
 export interface ITesterClass extends IBaseTesterClass {

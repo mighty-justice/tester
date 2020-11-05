@@ -1321,4 +1321,10 @@ var TesterConfig = /*#__PURE__*/new ConfigurationClass(Tester);
 
 exports.Tester = Tester;
 exports.TesterConfig = TesterConfig;
+exports.flushPromises = flushPromises;
+exports.getInstance = getInstance;
+exports.getValue = getValue;
+exports.isFunction = isFunction;
+exports.isString = isString;
+exports.sleep = sleep;
 //# sourceMappingURL=tester.cjs.development.js.map
