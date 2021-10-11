@@ -171,7 +171,7 @@ class Tester {
     this.wrapper = await this.config.enzyme.mount(WrapperTree);
 
     if (mountOpts.async !== false) {
-      if (this.instance) {
+      if (this.instance && typeof this.instance.componentDidMount === 'function') {
         await this.instance.componentDidMount();
       }
 
