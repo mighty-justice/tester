@@ -96,8 +96,5 @@ tester.wrapper // return of the enzyme mount()
  Here's the full list: [Helpers](docs/Helpers.md)
 
 ## Contributing
-Not availble yet
 
-## In the wild
-(Not available yet).
-Organizations and projects using `tester` can list themselves [here](#)
+- Release: `npm run deploy`
