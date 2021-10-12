@@ -1,6 +1,6 @@
 {
   "name": "@mighty-justice/tester",
-  "version": "2.0.0-2",
+  "version": "2.0.0",
   "description": "Bootstrap your tests!",
   "main": "dist/index.js",
   "module": "dist/tester.esm.js",

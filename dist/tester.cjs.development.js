@@ -1196,7 +1196,7 @@ var Tester = /*#__PURE__*/function () {
                 break;
               }
 
-              if (!this.instance) {
+              if (!(this.instance && typeof this.instance.componentDidMount === 'function')) {
                 _context4.next = 24;
                 break;
               }
