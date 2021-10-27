@@ -4,6 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
+var testUtils = require('react-dom/test-utils');
 var React = require('react');
 var React__default = _interopDefault(React);
 
@@ -879,7 +880,7 @@ function _sleep() {
         switch (_context.prev = _context.next) {
           case 0:
             if (ms === void 0) {
-              ms = 0;
+              ms = 1;
             }
 
             return _context.abrupt("return", new Promise(function (resolve) {
@@ -1071,60 +1072,184 @@ var Tester = /*#__PURE__*/function () {
     return isString(selector) ? this.find(selector).first() : selector;
   };
 
-  _proto.changeInput = function changeInput(selector, value) {
-    var component = this.getComponent(selector);
-    component.simulate('focus');
-    component.simulate('change', {
-      target: {
-        value: value
-      }
-    });
-    component.simulate('blur');
-  };
+  _proto.changeInput = /*#__PURE__*/function () {
+    var _changeInput = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee4(selector, value) {
+      var _this3 = this;
 
-  _proto.checkBox = function checkBox(selector, checked) {
-    if (checked === void 0) {
-      checked = true;
+      return runtime_1.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee3() {
+                var component;
+                return runtime_1.wrap(function _callee3$(_context3) {
+                  while (1) {
+                    switch (_context3.prev = _context3.next) {
+                      case 0:
+                        component = _this3.getComponent(selector);
+                        component.simulate('focus');
+                        component.simulate('change', {
+                          target: {
+                            value: value
+                          }
+                        });
+                        component.simulate('blur');
+
+                      case 4:
+                      case "end":
+                        return _context3.stop();
+                    }
+                  }
+                }, _callee3);
+              })));
+
+            case 2:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }));
+
+    function changeInput(_x3, _x4) {
+      return _changeInput.apply(this, arguments);
     }
 
-    var component = this.getComponent(selector);
-    component.simulate('change', {
-      target: {
-        checked: checked
-      }
-    });
-  };
+    return changeInput;
+  }();
 
-  _proto.click = function click(selector) {
-    var component = this.getComponent(selector);
-    component.simulate('click');
-  };
+  _proto.checkBox = /*#__PURE__*/function () {
+    var _checkBox = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee6(selector, checked) {
+      var _this4 = this;
+
+      return runtime_1.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              if (checked === void 0) {
+                checked = true;
+              }
+
+              _context6.next = 3;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee5() {
+                var component;
+                return runtime_1.wrap(function _callee5$(_context5) {
+                  while (1) {
+                    switch (_context5.prev = _context5.next) {
+                      case 0:
+                        component = _this4.getComponent(selector);
+                        component.simulate('change', {
+                          target: {
+                            checked: checked
+                          }
+                        });
+
+                      case 2:
+                      case "end":
+                        return _context5.stop();
+                    }
+                  }
+                }, _callee5);
+              })));
+
+            case 3:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6);
+    }));
+
+    function checkBox(_x5, _x6) {
+      return _checkBox.apply(this, arguments);
+    }
+
+    return checkBox;
+  }();
+
+  _proto.click = /*#__PURE__*/function () {
+    var _click = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee8(selector) {
+      var _this5 = this;
+
+      return runtime_1.wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              _context8.next = 2;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee7() {
+                var component;
+                return runtime_1.wrap(function _callee7$(_context7) {
+                  while (1) {
+                    switch (_context7.prev = _context7.next) {
+                      case 0:
+                        component = _this5.getComponent(selector);
+                        component.simulate('click');
+
+                      case 2:
+                      case "end":
+                        return _context7.stop();
+                    }
+                  }
+                }, _callee7);
+              })));
+
+            case 2:
+            case "end":
+              return _context8.stop();
+          }
+        }
+      }, _callee8);
+    }));
+
+    function click(_x7) {
+      return _click.apply(this, arguments);
+    }
+
+    return click;
+  }();
 
   _proto.submit = /*#__PURE__*/function () {
-    var _submit = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee3(selector) {
-      var component;
-      return runtime_1.wrap(function _callee3$(_context3) {
+    var _submit = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee10(selector) {
+      var _this6 = this;
+
+      return runtime_1.wrap(function _callee10$(_context10) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context10.prev = _context10.next) {
             case 0:
               if (selector === void 0) {
                 selector = 'form';
               }
 
-              component = this.getComponent(selector);
-              component.simulate('submit');
-              _context3.next = 5;
-              return this.refresh();
+              _context10.next = 3;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee9() {
+                var component;
+                return runtime_1.wrap(function _callee9$(_context9) {
+                  while (1) {
+                    switch (_context9.prev = _context9.next) {
+                      case 0:
+                        component = _this6.getComponent(selector);
+                        component.simulate('submit');
+                        _context9.next = 4;
+                        return _this6.refresh();
 
-            case 5:
+                      case 4:
+                      case "end":
+                        return _context9.stop();
+                    }
+                  }
+                }, _callee9);
+              })));
+
+            case 3:
             case "end":
-              return _context3.stop();
+              return _context10.stop();
           }
         }
-      }, _callee3, this);
+      }, _callee10);
     }));
 
-    function submit(_x3) {
+    function submit(_x8) {
       return _submit.apply(this, arguments);
     }
 
@@ -1132,12 +1257,12 @@ var Tester = /*#__PURE__*/function () {
   }();
 
   _proto.mount = /*#__PURE__*/function () {
-    var _mount = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee4(mountOpts) {
+    var _mount = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee11(mountOpts) {
       var validHooks, _iterator, _step, hook, props, initialMount, WrapperTree;
 
-      return runtime_1.wrap(function _callee4$(_context4) {
+      return runtime_1.wrap(function _callee11$(_context11) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context11.prev = _context11.next) {
             case 0:
               if (mountOpts === void 0) {
                 mountOpts = {};
@@ -1148,33 +1273,33 @@ var Tester = /*#__PURE__*/function () {
 
             case 3:
               if ((_step = _iterator()).done) {
-                _context4.next = 9;
+                _context11.next = 9;
                 break;
               }
 
               hook = _step.value;
-              _context4.next = 7;
+              _context11.next = 7;
               return hook.onBeforeMount(this, mountOpts);
 
             case 7:
-              _context4.next = 3;
+              _context11.next = 3;
               break;
 
             case 9:
               if (!this.onBeforeMount) {
-                _context4.next = 12;
+                _context11.next = 12;
                 break;
               }
 
-              _context4.next = 12;
+              _context11.next = 12;
               return this.onBeforeMount(this);
 
             case 12:
-              _context4.next = 14;
+              _context11.next = 14;
               return getValue(this, this.props);
 
             case 14:
-              props = _context4.sent;
+              props = _context11.sent;
               initialMount = this.initialMount || React__default.createElement(this.TestedComponent, Object.assign({}, props));
               WrapperTree = this.getWrappers().reduce(function (Tree, wrapper) {
                 var wrapperChildren = wrapper.renderChildren !== false && Tree;
@@ -1185,45 +1310,45 @@ var Tester = /*#__PURE__*/function () {
 
                 return Tree;
               }, initialMount);
-              _context4.next = 19;
+              _context11.next = 19;
               return this.config.enzyme.mount(WrapperTree);
 
             case 19:
-              this.wrapper = _context4.sent;
+              this.wrapper = _context11.sent;
 
               if (!(mountOpts.async !== false)) {
-                _context4.next = 28;
+                _context11.next = 28;
                 break;
               }
 
               if (!(this.instance && typeof this.instance.componentDidMount === 'function')) {
-                _context4.next = 24;
+                _context11.next = 24;
                 break;
               }
 
-              _context4.next = 24;
+              _context11.next = 24;
               return this.instance.componentDidMount();
 
             case 24:
-              _context4.next = 26;
+              _context11.next = 26;
               return flushPromises();
 
             case 26:
-              _context4.next = 28;
+              _context11.next = 28;
               return this.refresh();
 
             case 28:
-              return _context4.abrupt("return", this);
+              return _context11.abrupt("return", this);
 
             case 29:
             case "end":
-              return _context4.stop();
+              return _context11.stop();
           }
         }
-      }, _callee4, this);
+      }, _callee11, this);
     }));
 
-    function mount(_x4) {
+    function mount(_x9) {
       return _mount.apply(this, arguments);
     }
 

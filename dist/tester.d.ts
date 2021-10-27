@@ -28,9 +28,9 @@ declare class Tester {
     sleep(ms?: number): Promise<void>;
     refresh(ms?: number): Promise<void>;
     private getComponent;
-    changeInput(selector: ISelectArg, value: string): void;
-    checkBox(selector: ISelectArg, checked?: boolean): void;
-    click(selector: ISelectArg): void;
+    changeInput(selector: ISelectArg, value: string): Promise<void>;
+    checkBox(selector: ISelectArg, checked?: boolean): Promise<void>;
+    click(selector: ISelectArg): Promise<void>;
     submit(selector?: ISelectArg): Promise<void>;
     mount(mountOpts?: {
         async?: boolean;
