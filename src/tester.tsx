@@ -1,3 +1,4 @@
+import { act } from 'react-dom/test-utils';
 import React, { Fragment, ComponentType } from 'react';
 
 import { flushPromises, getInstance, getValue, isString, sleep } from './utils';
@@ -120,27 +121,35 @@ class Tester {
     return isString(selector) ? this.find(selector).first() : selector;
   }
 
-  public changeInput(selector: ISelectArg, value: string) {
-    const component = this.getComponent(selector);
-    component.simulate('focus');
-    component.simulate('change', { target: { value } });
-    component.simulate('blur');
+  public async changeInput(selector: ISelectArg, value: string) {
+    await act(async () => {
+      const component = this.getComponent(selector);
+      component.simulate('focus');
+      component.simulate('change', { target: { value } });
+      component.simulate('blur');
+    });
   }
 
-  public checkBox(selector: ISelectArg, checked = true) {
-    const component = this.getComponent(selector);
-    component.simulate('change', { target: { checked } });
+  public async checkBox(selector: ISelectArg, checked = true) {
+    await act(async () => {
+      const component = this.getComponent(selector);
+      component.simulate('change', { target: { checked } });
+    });
   }
 
-  public click(selector: ISelectArg) {
-    const component = this.getComponent(selector);
-    component.simulate('click');
+  public async click(selector: ISelectArg) {
+    await act(async () => {
+      const component = this.getComponent(selector);
+      component.simulate('click');
+    });
   }
 
   public async submit(selector: ISelectArg = 'form') {
-    const component = this.getComponent(selector);
-    component.simulate('submit');
-    await this.refresh();
+    await act(async () => {
+      const component = this.getComponent(selector);
+      component.simulate('submit');
+      await this.refresh();
+    });
   }
 
   public async mount(mountOpts: { async?: boolean } = {}) {
