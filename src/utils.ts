@@ -15,7 +15,7 @@ export function getValue(tester: any, value: unknown) {
   return isFunction(value) ? value(tester) : value;
 }
 
-export async function sleep(ms: number = 0) {
+export async function sleep(ms: number = 1) {
   return new Promise<void>(resolve => setTimeout(resolve, ms));
 }
 
