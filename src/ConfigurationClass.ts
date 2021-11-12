@@ -47,26 +47,11 @@ class ConfigurationClass {
       throw new Error(`Tester.registerHook() : A hook named "${hook.name}" already exist.`);
     }
 
-    // Validate hook properties here.
-
     this.hooks[hook.name] = hook;
   }
 
   public getValidHooks(hookProp: string): IHook[] {
-    const hooks: IHook[] = [];
-
-    Object.values(this.hooks).forEach(hook => {
-      let valid = true;
-      if (hookProp && !hook[hookProp]) {
-        valid = false;
-      }
-
-      if (valid) {
-        hooks.push(hook);
-      }
-    });
-
-    return hooks;
+    return Object.values(this.hooks).filter(hook => !hookProp || hook[hookProp]);
   }
 }
 
