@@ -10,6 +10,7 @@ const MyTestingComponent = (props: any) => <div id={COMPONENT_ID} {...props} />;
 interface IAsyncComponentProps {
   label?: string;
 }
+
 class AsyncComponent extends Component<IAsyncComponentProps, { status: string }> {
   public constructor(props: IAsyncComponentProps) {
     super(props);

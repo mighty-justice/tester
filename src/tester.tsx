@@ -1,13 +1,11 @@
 import { act } from 'react-dom/test-utils';
-import React, { Fragment, ComponentType } from 'react';
+import React, { ComponentType } from 'react';
 
 import { flushPromises, getInstance, getValue, isString, sleep } from './utils';
 import ConfigurationClass from './ConfigurationClass';
 import { IHook, ITesterOpts, IWrapper, IOnInit, IOnBeforeMount, IProps } from './interfaces';
 
 type ISelectArg = string | { simulate: (event: string) => void };
-
-const NullComponent: React.FC<any> = (props: any) => <Fragment {...props} />;
 
 /*
   Name: Tester
@@ -39,7 +37,6 @@ class Tester {
   public opts: ITesterOpts;
 
   public config: ConfigurationClass;
-  public initialMount: React.ReactNode;
   public onBeforeMount?: (tester: Tester) => Promise<void>;
   public props: IProps;
   public TestedComponent: ComponentType<any>;
@@ -48,17 +45,10 @@ class Tester {
 
   public constructor(TestedComponent: ComponentType<any>, opts: ITesterOpts = {}) {
     this.config = Tester.Configuration;
-    this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
     this.opts = opts;
     this.props = opts.props || {};
     this.TestedComponent = TestedComponent;
-
-    // Allow testing without a main TestedComponent. This require an initialMount.
-    if (!this.TestedComponent && this.initialMount) {
-      this.TestedComponent = NullComponent;
-      this.initialMount = <this.TestedComponent>{this.initialMount}</this.TestedComponent>;
-    }
 
     // Loop through hooks onInit(),
     const validHooks = this.config.getValidHooks('onInit') as Array<IHook & { onInit: IOnInit }>;
@@ -153,41 +143,42 @@ class Tester {
   }
 
   public async mount(mountOpts: { async?: boolean } = {}) {
-    // Loop through hooks onBeforeMount(),
-    // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
-    type IValidHook = IHook & { onBeforeMount: IOnBeforeMount };
-    const validHooks = this.config.getValidHooks('onBeforeMount') as IValidHook[];
-    for (const hook of validHooks) {
-      await hook.onBeforeMount(this, mountOpts);
-    }
-
-    // Allows you to fetch data to set as props, prepare extra stores, etc.
-    if (this.onBeforeMount) {
-      await this.onBeforeMount(this);
-    }
-
-    const props = await getValue(this, this.props);
-    const initialMount = this.initialMount || <this.TestedComponent {...props} />;
-
-    const WrapperTree = this.getWrappers().reduce<any>((Tree, wrapper) => {
-      const wrapperChildren = wrapper.renderChildren !== false && Tree;
-      if (wrapper.props) {
-        return <wrapper.component {...wrapper.props}>{wrapperChildren}</wrapper.component>;
-      }
-      return Tree;
-    }, initialMount);
-
-    this.wrapper = await this.config.enzyme.mount(WrapperTree);
-
-    if (mountOpts.async !== false) {
-      if (this.instance && typeof this.instance.componentDidMount === 'function') {
-        await this.instance.componentDidMount();
+    await act(async () => {
+      // Loop through hooks onBeforeMount(),
+      // This MUST be a regular for () loop to not throw the promise away. (forEach won't work)
+      type IValidHook = IHook & { onBeforeMount: IOnBeforeMount };
+      const validHooks = this.config.getValidHooks('onBeforeMount') as IValidHook[];
+      for (const hook of validHooks) {
+        await hook.onBeforeMount(this, mountOpts);
       }
 
-      // See https://github.com/enzymejs/enzyme/issues/1587
-      await flushPromises();
-      await this.refresh();
-    }
+      // Allows you to fetch data to set as props, prepare extra stores, etc.
+      if (this.onBeforeMount) {
+        await this.onBeforeMount(this);
+      }
+
+      const props = await getValue(this, this.props);
+
+      const WrapperTree = this.getWrappers().reduce<any>((Tree, wrapper) => {
+        const wrapperChildren = wrapper.renderChildren !== false && Tree;
+        if (wrapper.props) {
+          return <wrapper.component {...wrapper.props}>{wrapperChildren}</wrapper.component>;
+        }
+        return Tree;
+      }, <this.TestedComponent {...props} />);
+
+      this.wrapper = await this.config.enzyme.mount(WrapperTree);
+
+      if (mountOpts.async !== false) {
+        if (this.instance && typeof this.instance.componentDidMount === 'function') {
+          await this.instance.componentDidMount();
+        }
+
+        // See https://github.com/enzymejs/enzyme/issues/1587
+        await flushPromises();
+        await this.refresh();
+      }
+    });
 
     return this;
   }
