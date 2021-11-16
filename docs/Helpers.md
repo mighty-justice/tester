@@ -4,7 +4,7 @@
 
 Basic helpers that return what has been mounted OR are simply enzyme shortcuts.
 
-```js
+```ts
 tester.instance // The instance of the tested component
 tester.component // The tested component
 tester.html() // Retrieve mounted component html
@@ -14,13 +14,13 @@ tester.update(); // shortcut for enzyme update();
 ```
 
 ## sleep
-```.js
+```ts
 /* await 20ms, useful when triggering mocked Api Calls */
 tester.sleep();
 ```
 
 ## refresh
-```.js
+```ts
 /*
   Calls both tester.sleep() and tester.update() to
   wait for an action to be fully complete.
@@ -30,7 +30,7 @@ tester.refresh();
 ```
 
 ## debug
-```.js
+```ts
 // render tester.wrapper.debug(); in a console log
 tester.debug();
 ```

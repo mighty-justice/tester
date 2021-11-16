@@ -1,8 +1,5 @@
-import { IConfig, IHook, ITesterClass } from './interfaces';
+import { IHooks, IHook, ITesterClass } from './interfaces';
 
-/*
-  Tester Configuration Class
-*/
 class ConfigurationClass {
   public enzyme: any;
   public hooks: { [key: string]: IHook } = {};
@@ -13,44 +10,14 @@ class ConfigurationClass {
     argTester.Configuration = this;
   }
 
-  public configure(enzyme: any, config: IConfig) {
+  public configure(enzyme: any, hooks: IHooks) {
     this.enzyme = enzyme;
-
-    if (config.hooks) {
-      config.hooks.forEach((hook: IHook) => {
-        this.registerHook(hook);
-      });
-    }
+    this.hooks = hooks;
 
     return this.Tester;
   }
 
-  /*
-    Hooks,
-    {
-      name: string,
-      component: React.Component,
-      props: object || fn(), // fn() allows this.AppState to be set for e.g
-      onInit: fn(),
-      onBeforeMount: fn(),
-      shortCuts: {shortCutName: fn()},
-      wrapper: fn() => { Component: React.Component, name: string, props: object }
-    }
-
-    Note: Order is important!
-  */
-  public registerHook(hook: IHook) {
-    if (!hook.name) {
-      throw new Error('Tester.registerHook() : A hooks must have a name.');
-    }
-    if (this.hooks[hook.name]) {
-      throw new Error(`Tester.registerHook() : A hook named "${hook.name}" already exist.`);
-    }
-
-    this.hooks[hook.name] = hook;
-  }
-
-  public getValidHooks(hookProp: string): IHook[] {
+  public getValidHooks(hookProp: keyof IHook): IHook[] {
     return Object.values(this.hooks).filter(hook => !hookProp || hook[hookProp]);
   }
 }

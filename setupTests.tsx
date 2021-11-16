@@ -13,20 +13,17 @@ const TestHookComponent = ({ propOne, propTwo, ...rest }: any) => (
 );
 
 TesterConfig.configure(enzyme, {
-  hooks: [
-    {
-      component: TestHookComponent,
-      name: 'testHook',
-      onBeforeMount: tester => {
-        (tester as any).testHookOnBeforeMount = true;
-      },
-      onInit: tester => {
-        (tester as any).testHookOnInit = true;
-      },
-      props: (_tester: any) => ({
-        propOne: 'un',
-        propTwo: 'deux',
-      }),
+  testHook: {
+    component: TestHookComponent,
+    onBeforeMount: tester => {
+      (tester as any).testHookOnBeforeMount = true;
     },
-  ],
+    onInit: tester => {
+      (tester as any).testHookOnInit = true;
+    },
+    props: (_tester: any) => ({
+      propOne: 'un',
+      propTwo: 'deux',
+    }),
+  },
 });

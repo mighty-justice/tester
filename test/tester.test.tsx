@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { Tester } from '../src';
 import { isFunction, sleep } from '../src/utils';
 import { IProps } from '../src/interfaces';

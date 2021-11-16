@@ -2,6 +2,8 @@
   Utilities
 */
 
+import { IHook, IWrapper } from 'interfaces';
+
 export function getInstance(component: any) {
   const instance = component.instance();
   return instance && (instance.wrappedInstance || instance);
@@ -25,4 +27,8 @@ export function isString(value: unknown): value is string {
 
 export async function flushPromises() {
   return new Promise<void>((resolve, _reject) => setImmediate(resolve));
+}
+
+export function hookIsWrapper(hook: IHook): hook is IWrapper {
+  return 'component' in hook && !!hook.component;
 }

@@ -12,8 +12,6 @@ export type IOnInit = (tester: Tester) => void;
 export type IProps = object | ((tester: Tester) => Promise<object>);
 
 export interface IBaseHook {
-  [key: string]: any;
-  name: string;
   onBeforeMount?: IOnBeforeMount;
   onInit?: IOnInit;
   shortCuts?: { [shortCutName: string]: () => void };
@@ -27,9 +25,7 @@ export interface IWrapper extends IBaseHook {
 
 export type IHook = IBaseHook | IWrapper;
 
-export interface IConfig {
-  hooks: IHook[];
-}
+export type IHooks = { [name: string]: IHook };
 
 export interface ITesterOpts {
   mount?: React.ReactNode;

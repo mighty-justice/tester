@@ -1,32 +1,11 @@
 import { act } from 'react-dom/test-utils';
 import React, { ComponentType } from 'react';
 
-import { flushPromises, getInstance, getValue, isString, sleep } from './utils';
+import { flushPromises, getInstance, getValue, hookIsWrapper, isString, sleep } from './utils';
 import ConfigurationClass from './ConfigurationClass';
 import { IHook, ITesterOpts, IWrapper, IOnInit, IOnBeforeMount, IProps } from './interfaces';
 
 type ISelectArg = string | { simulate: (event: string) => void };
-
-/*
-  Name: Tester
-  Description: Testing utility class to mount a specific component with it's required wrappers.
-
-  Usage:
-    // Bootstrap Transport, localStorage + Session and an AppState.
-    const tester = new Tester(MyComponent);
-
-    // Bootstrap nothing, use with light components that doesn't need any of the above.
-    const tester = new TesterLight(MyComponent);
-
-    // Mount the component
-    await tester.mount();
-
-    // Test component that requires more JSX than the component only :
-    const new Tester(MyComponent, {mount: (<Form><MyComponent></Form>)});
-
-    // You can mount right away if no Transport or AppState modification is needed.
-    const tester = await new Tester(MyComponent).mount();
-*/
 
 /**
  * Testing utility class to mount a specific component with it's required wrappers.
@@ -56,17 +35,12 @@ class Tester {
   }
 
   public getWrappers(): IWrapper[] {
-    const wrappers: IWrapper[] = [];
+    const wrappers: IWrapper[] = Object.values(this.config.hooks).filter(hook => hookIsWrapper(hook)) as IWrapper[];
 
-    this.config.getValidHooks('component').forEach((hook: IHook) => {
-      wrappers.push({
-        component: hook.component,
-        name: hook.name,
-        props: getValue(this, hook.props),
-      });
-    });
-
-    return wrappers;
+    return wrappers?.map(hook => ({
+      ...hook,
+      props: getValue(this, hook.props),
+    }));
   }
 
   public get instance() {
