@@ -5,8 +5,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var testUtils = require('react-dom/test-utils');
-var React = require('react');
-var React__default = _interopDefault(React);
+var React = _interopDefault(require('react'));
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
@@ -924,9 +923,6 @@ function _flushPromises() {
   return _flushPromises.apply(this, arguments);
 }
 
-var NullComponent = function NullComponent(props) {
-  return React__default.createElement(React.Fragment, Object.assign({}, props));
-};
 /*
   Name: Tester
   Description: Testing utility class to mount a specific component with it's required wrappers.
@@ -952,7 +948,6 @@ var NullComponent = function NullComponent(props) {
  * Testing utility class to mount a specific component with it's required wrappers.
  */
 
-
 var Tester = /*#__PURE__*/function () {
   function Tester(TestedComponent, opts) {
     var _this = this;
@@ -962,17 +957,10 @@ var Tester = /*#__PURE__*/function () {
     }
 
     this.config = Tester.Configuration;
-    this.initialMount = opts.mount;
     this.onBeforeMount = opts.onBeforeMount;
     this.opts = opts;
     this.props = opts.props || {};
-    this.TestedComponent = TestedComponent; // Allow testing without a main TestedComponent. This require an initialMount.
-
-    if (!this.TestedComponent && this.initialMount) {
-      this.TestedComponent = NullComponent;
-      this.initialMount = React__default.createElement(this.TestedComponent, null, this.initialMount);
-    } // Loop through hooks onInit(),
-
+    this.TestedComponent = TestedComponent; // Loop through hooks onInit(),
 
     var validHooks = this.config.getValidHooks('onInit');
     validHooks.forEach(function (hook) {
@@ -1257,95 +1245,110 @@ var Tester = /*#__PURE__*/function () {
   }();
 
   _proto.mount = /*#__PURE__*/function () {
-    var _mount = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee11(mountOpts) {
-      var validHooks, _iterator, _step, hook, props, initialMount, WrapperTree;
+    var _mount = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee12(mountOpts) {
+      var _this7 = this;
 
-      return runtime_1.wrap(function _callee11$(_context11) {
+      return runtime_1.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context11.prev = _context11.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
               if (mountOpts === void 0) {
                 mountOpts = {};
               }
 
-              validHooks = this.config.getValidHooks('onBeforeMount');
-              _iterator = _createForOfIteratorHelperLoose(validHooks);
+              _context12.next = 3;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee11() {
+                var validHooks, _iterator, _step, hook, props, WrapperTree;
+
+                return runtime_1.wrap(function _callee11$(_context11) {
+                  while (1) {
+                    switch (_context11.prev = _context11.next) {
+                      case 0:
+                        validHooks = _this7.config.getValidHooks('onBeforeMount');
+                        _iterator = _createForOfIteratorHelperLoose(validHooks);
+
+                      case 2:
+                        if ((_step = _iterator()).done) {
+                          _context11.next = 8;
+                          break;
+                        }
+
+                        hook = _step.value;
+                        _context11.next = 6;
+                        return hook.onBeforeMount(_this7, mountOpts);
+
+                      case 6:
+                        _context11.next = 2;
+                        break;
+
+                      case 8:
+                        if (!_this7.onBeforeMount) {
+                          _context11.next = 11;
+                          break;
+                        }
+
+                        _context11.next = 11;
+                        return _this7.onBeforeMount(_this7);
+
+                      case 11:
+                        _context11.next = 13;
+                        return getValue(_this7, _this7.props);
+
+                      case 13:
+                        props = _context11.sent;
+                        WrapperTree = _this7.getWrappers().reduce(function (Tree, wrapper) {
+                          var wrapperChildren = wrapper.renderChildren !== false && Tree;
+
+                          if (wrapper.props) {
+                            return React.createElement(wrapper.component, Object.assign({}, wrapper.props), wrapperChildren);
+                          }
+
+                          return Tree;
+                        }, React.createElement(_this7.TestedComponent, Object.assign({}, props)));
+                        _context11.next = 17;
+                        return _this7.config.enzyme.mount(WrapperTree);
+
+                      case 17:
+                        _this7.wrapper = _context11.sent;
+
+                        if (!(mountOpts.async !== false)) {
+                          _context11.next = 26;
+                          break;
+                        }
+
+                        if (!(_this7.instance && typeof _this7.instance.componentDidMount === 'function')) {
+                          _context11.next = 22;
+                          break;
+                        }
+
+                        _context11.next = 22;
+                        return _this7.instance.componentDidMount();
+
+                      case 22:
+                        _context11.next = 24;
+                        return flushPromises();
+
+                      case 24:
+                        _context11.next = 26;
+                        return _this7.refresh();
+
+                      case 26:
+                      case "end":
+                        return _context11.stop();
+                    }
+                  }
+                }, _callee11);
+              })));
 
             case 3:
-              if ((_step = _iterator()).done) {
-                _context11.next = 9;
-                break;
-              }
+              return _context12.abrupt("return", this);
 
-              hook = _step.value;
-              _context11.next = 7;
-              return hook.onBeforeMount(this, mountOpts);
-
-            case 7:
-              _context11.next = 3;
-              break;
-
-            case 9:
-              if (!this.onBeforeMount) {
-                _context11.next = 12;
-                break;
-              }
-
-              _context11.next = 12;
-              return this.onBeforeMount(this);
-
-            case 12:
-              _context11.next = 14;
-              return getValue(this, this.props);
-
-            case 14:
-              props = _context11.sent;
-              initialMount = this.initialMount || React__default.createElement(this.TestedComponent, Object.assign({}, props));
-              WrapperTree = this.getWrappers().reduce(function (Tree, wrapper) {
-                var wrapperChildren = wrapper.renderChildren !== false && Tree;
-
-                if (wrapper.props) {
-                  return React__default.createElement(wrapper.component, Object.assign({}, wrapper.props), wrapperChildren);
-                }
-
-                return Tree;
-              }, initialMount);
-              _context11.next = 19;
-              return this.config.enzyme.mount(WrapperTree);
-
-            case 19:
-              this.wrapper = _context11.sent;
-
-              if (!(mountOpts.async !== false)) {
-                _context11.next = 28;
-                break;
-              }
-
-              if (!(this.instance && typeof this.instance.componentDidMount === 'function')) {
-                _context11.next = 24;
-                break;
-              }
-
-              _context11.next = 24;
-              return this.instance.componentDidMount();
-
-            case 24:
-              _context11.next = 26;
-              return flushPromises();
-
-            case 26:
-              _context11.next = 28;
-              return this.refresh();
-
-            case 28:
-              return _context11.abrupt("return", this);
-
-            case 29:
+            case 4:
             case "end":
-              return _context11.stop();
+              return _context12.stop();
           }
         }
-      }, _callee11, this);
+      }, _callee12, this);
     }));
 
     function mount(_x9) {
@@ -1417,26 +1420,15 @@ var ConfigurationClass = /*#__PURE__*/function () {
 
     if (this.hooks[hook.name]) {
       throw new Error("Tester.registerHook() : A hook named \"" + hook.name + "\" already exist.");
-    } // Validate hook properties here.
-
+    }
 
     this.hooks[hook.name] = hook;
   };
 
   _proto.getValidHooks = function getValidHooks(hookProp) {
-    var hooks = [];
-    Object.values(this.hooks).forEach(function (hook) {
-      var valid = true;
-
-      if (hookProp && !hook[hookProp]) {
-        valid = false;
-      }
-
-      if (valid) {
-        hooks.push(hook);
-      }
+    return Object.values(this.hooks).filter(function (hook) {
+      return !hookProp || hook[hookProp];
     });
-    return hooks;
   };
 
   return ConfigurationClass;

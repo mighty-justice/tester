@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import { ComponentType } from 'react';
 import ConfigurationClass from './ConfigurationClass';
 import { ITesterOpts, IWrapper, IProps } from './interfaces';
 declare type ISelectArg = string | {
@@ -11,7 +11,6 @@ declare class Tester {
     static Configuration: ConfigurationClass;
     opts: ITesterOpts;
     config: ConfigurationClass;
-    initialMount: React.ReactNode;
     onBeforeMount?: (tester: Tester) => Promise<void>;
     props: IProps;
     TestedComponent: ComponentType<any>;
