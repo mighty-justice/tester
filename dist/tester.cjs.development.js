@@ -77,28 +77,24 @@ function _arrayLikeToArray(arr, len) {
 }
 
 function _createForOfIteratorHelperLoose(o, allowArrayLike) {
-  var it;
+  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+  if (it) return (it = it.call(o)).next.bind(it);
 
-  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-      if (it) o = it;
-      var i = 0;
-      return function () {
-        if (i >= o.length) return {
-          done: true
-        };
-        return {
-          done: false,
-          value: o[i++]
-        };
+  if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+    if (it) o = it;
+    var i = 0;
+    return function () {
+      if (i >= o.length) return {
+        done: true
       };
-    }
-
-    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+      return {
+        done: false,
+        value: o[i++]
+      };
+    };
   }
 
-  it = o[Symbol.iterator]();
-  return it.next.bind(it);
+  throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 function createCommonjsModule(fn, module) {
@@ -193,9 +189,9 @@ var runtime = (function (exports) {
   // This is a polyfill for %IteratorPrototype% for environments that
   // don't natively support it.
   var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
+  define(IteratorPrototype, iteratorSymbol, function () {
     return this;
-  };
+  });
 
   var getProto = Object.getPrototypeOf;
   var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
@@ -209,8 +205,9 @@ var runtime = (function (exports) {
 
   var Gp = GeneratorFunctionPrototype.prototype =
     Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunction.prototype = GeneratorFunctionPrototype;
+  define(Gp, "constructor", GeneratorFunctionPrototype);
+  define(GeneratorFunctionPrototype, "constructor", GeneratorFunction);
   GeneratorFunction.displayName = define(
     GeneratorFunctionPrototype,
     toStringTagSymbol,
@@ -324,9 +321,9 @@ var runtime = (function (exports) {
   }
 
   defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+  define(AsyncIterator.prototype, asyncIteratorSymbol, function () {
     return this;
-  };
+  });
   exports.AsyncIterator = AsyncIterator;
 
   // Note that simple async functions are implemented on top of
@@ -519,13 +516,13 @@ var runtime = (function (exports) {
   // iterator prototype chain incorrectly implement this, causing the Generator
   // object to not be returned from this call. This ensures that doesn't happen.
   // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
+  define(Gp, iteratorSymbol, function() {
     return this;
-  };
+  });
 
-  Gp.toString = function() {
+  define(Gp, "toString", function() {
     return "[object Generator]";
-  };
+  });
 
   function pushTryEntry(locs) {
     var entry = { tryLoc: locs[0] };
@@ -844,14 +841,19 @@ try {
 } catch (accidentalStrictMode) {
   // This module should not be running in strict mode, so the above
   // assignment should always work unless something is misconfigured. Just
-  // in case runtime.js accidentally runs in strict mode, we can escape
+  // in case runtime.js accidentally runs in strict mode, in modern engines
+  // we can explicitly access globalThis. In older engines we can escape
   // strict mode using a global Function call. This could conceivably fail
   // if a Content Security Policy forbids using Function, but in that case
   // the proper solution is to fix the accidental strict mode problem. If
   // you've misconfigured your bundler to force strict mode and applied a
   // CSP to forbid Function, and you're not willing to fix either of those
   // problems, please detail your unique predicament in a GitHub issue.
-  Function("r", "regeneratorRuntime = r")(runtime);
+  if (typeof globalThis === "object") {
+    globalThis.regeneratorRuntime = runtime;
+  } else {
+    Function("r", "regeneratorRuntime = r")(runtime);
+  }
 }
 });
 
@@ -1006,20 +1008,34 @@ var Tester = /*#__PURE__*/function () {
   };
 
   _proto.sleep = /*#__PURE__*/function () {
-    var _sleep2 = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee(ms) {
-      return runtime_1.wrap(function _callee$(_context) {
+    var _sleep2 = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee2(ms) {
+      return runtime_1.wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
-              _context.next = 2;
-              return sleep(ms);
+              _context2.next = 2;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee() {
+                return runtime_1.wrap(function _callee$(_context) {
+                  while (1) {
+                    switch (_context.prev = _context.next) {
+                      case 0:
+                        _context.next = 2;
+                        return sleep(ms);
+
+                      case 2:
+                      case "end":
+                        return _context.stop();
+                    }
+                  }
+                }, _callee);
+              })));
 
             case 2:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
         }
-      }, _callee);
+      }, _callee2);
     }));
 
     function sleep$1(_x) {
@@ -1030,38 +1046,7 @@ var Tester = /*#__PURE__*/function () {
   }();
 
   _proto.refresh = /*#__PURE__*/function () {
-    var _refresh = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee2(ms) {
-      return runtime_1.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.next = 2;
-              return sleep(ms);
-
-            case 2:
-              this.update();
-
-            case 3:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2, this);
-    }));
-
-    function refresh(_x2) {
-      return _refresh.apply(this, arguments);
-    }
-
-    return refresh;
-  }();
-
-  _proto.getComponent = function getComponent(selector) {
-    return isString(selector) ? this.find(selector).first() : selector;
-  };
-
-  _proto.changeInput = /*#__PURE__*/function () {
-    var _changeInput = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee4(selector, value) {
+    var _refresh = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee4(ms) {
       var _this3 = this;
 
       return runtime_1.wrap(function _callee4$(_context4) {
@@ -1070,21 +1055,17 @@ var Tester = /*#__PURE__*/function () {
             case 0:
               _context4.next = 2;
               return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee3() {
-                var component;
                 return runtime_1.wrap(function _callee3$(_context3) {
                   while (1) {
                     switch (_context3.prev = _context3.next) {
                       case 0:
-                        component = _this3.getComponent(selector);
-                        component.simulate('focus');
-                        component.simulate('change', {
-                          target: {
-                            value: value
-                          }
-                        });
-                        component.simulate('blur');
+                        _context3.next = 2;
+                        return sleep(ms);
 
-                      case 4:
+                      case 2:
+                        _this3.update();
+
+                      case 3:
                       case "end":
                         return _context3.stop();
                     }
@@ -1100,6 +1081,57 @@ var Tester = /*#__PURE__*/function () {
       }, _callee4);
     }));
 
+    function refresh(_x2) {
+      return _refresh.apply(this, arguments);
+    }
+
+    return refresh;
+  }();
+
+  _proto.getComponent = function getComponent(selector) {
+    return isString(selector) ? this.find(selector).first() : selector;
+  };
+
+  _proto.changeInput = /*#__PURE__*/function () {
+    var _changeInput = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee6(selector, value) {
+      var _this4 = this;
+
+      return runtime_1.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.next = 2;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee5() {
+                var component;
+                return runtime_1.wrap(function _callee5$(_context5) {
+                  while (1) {
+                    switch (_context5.prev = _context5.next) {
+                      case 0:
+                        component = _this4.getComponent(selector);
+                        component.simulate('focus');
+                        component.simulate('change', {
+                          target: {
+                            value: value
+                          }
+                        });
+                        component.simulate('blur');
+
+                      case 4:
+                      case "end":
+                        return _context5.stop();
+                    }
+                  }
+                }, _callee5);
+              })));
+
+            case 2:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6);
+    }));
+
     function changeInput(_x3, _x4) {
       return _changeInput.apply(this, arguments);
     }
@@ -1108,25 +1140,25 @@ var Tester = /*#__PURE__*/function () {
   }();
 
   _proto.checkBox = /*#__PURE__*/function () {
-    var _checkBox = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee6(selector, checked) {
-      var _this4 = this;
+    var _checkBox = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee8(selector, checked) {
+      var _this5 = this;
 
-      return runtime_1.wrap(function _callee6$(_context6) {
+      return runtime_1.wrap(function _callee8$(_context8) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context8.prev = _context8.next) {
             case 0:
               if (checked === void 0) {
                 checked = true;
               }
 
-              _context6.next = 3;
-              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee5() {
+              _context8.next = 3;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee7() {
                 var component;
-                return runtime_1.wrap(function _callee5$(_context5) {
+                return runtime_1.wrap(function _callee7$(_context7) {
                   while (1) {
-                    switch (_context5.prev = _context5.next) {
+                    switch (_context7.prev = _context7.next) {
                       case 0:
-                        component = _this4.getComponent(selector);
+                        component = _this5.getComponent(selector);
                         component.simulate('change', {
                           target: {
                             checked: checked
@@ -1135,18 +1167,18 @@ var Tester = /*#__PURE__*/function () {
 
                       case 2:
                       case "end":
-                        return _context5.stop();
+                        return _context7.stop();
                     }
                   }
-                }, _callee5);
+                }, _callee7);
               })));
 
             case 3:
             case "end":
-              return _context6.stop();
+              return _context8.stop();
           }
         }
-      }, _callee6);
+      }, _callee8);
     }));
 
     function checkBox(_x5, _x6) {
@@ -1157,37 +1189,37 @@ var Tester = /*#__PURE__*/function () {
   }();
 
   _proto.click = /*#__PURE__*/function () {
-    var _click = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee8(selector) {
-      var _this5 = this;
+    var _click = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee10(selector) {
+      var _this6 = this;
 
-      return runtime_1.wrap(function _callee8$(_context8) {
+      return runtime_1.wrap(function _callee10$(_context10) {
         while (1) {
-          switch (_context8.prev = _context8.next) {
+          switch (_context10.prev = _context10.next) {
             case 0:
-              _context8.next = 2;
-              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee7() {
+              _context10.next = 2;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee9() {
                 var component;
-                return runtime_1.wrap(function _callee7$(_context7) {
+                return runtime_1.wrap(function _callee9$(_context9) {
                   while (1) {
-                    switch (_context7.prev = _context7.next) {
+                    switch (_context9.prev = _context9.next) {
                       case 0:
-                        component = _this5.getComponent(selector);
+                        component = _this6.getComponent(selector);
                         component.simulate('click');
 
                       case 2:
                       case "end":
-                        return _context7.stop();
+                        return _context9.stop();
                     }
                   }
-                }, _callee7);
+                }, _callee9);
               })));
 
             case 2:
             case "end":
-              return _context8.stop();
+              return _context10.stop();
           }
         }
-      }, _callee8);
+      }, _callee10);
     }));
 
     function click(_x7) {
@@ -1198,43 +1230,43 @@ var Tester = /*#__PURE__*/function () {
   }();
 
   _proto.submit = /*#__PURE__*/function () {
-    var _submit = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee10(selector) {
-      var _this6 = this;
+    var _submit = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee12(selector) {
+      var _this7 = this;
 
-      return runtime_1.wrap(function _callee10$(_context10) {
+      return runtime_1.wrap(function _callee12$(_context12) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
               if (selector === void 0) {
                 selector = 'form';
               }
 
-              _context10.next = 3;
-              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee9() {
+              _context12.next = 3;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee11() {
                 var component;
-                return runtime_1.wrap(function _callee9$(_context9) {
+                return runtime_1.wrap(function _callee11$(_context11) {
                   while (1) {
-                    switch (_context9.prev = _context9.next) {
+                    switch (_context11.prev = _context11.next) {
                       case 0:
-                        component = _this6.getComponent(selector);
+                        component = _this7.getComponent(selector);
                         component.simulate('submit');
-                        _context9.next = 4;
-                        return _this6.refresh();
+                        _context11.next = 4;
+                        return _this7.refresh();
 
                       case 4:
                       case "end":
-                        return _context9.stop();
+                        return _context11.stop();
                     }
                   }
-                }, _callee9);
+                }, _callee11);
               })));
 
             case 3:
             case "end":
-              return _context10.stop();
+              return _context12.stop();
           }
         }
-      }, _callee10);
+      }, _callee12);
     }));
 
     function submit(_x8) {
@@ -1245,58 +1277,58 @@ var Tester = /*#__PURE__*/function () {
   }();
 
   _proto.mount = /*#__PURE__*/function () {
-    var _mount = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee12(mountOpts) {
-      var _this7 = this;
+    var _mount = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee14(mountOpts) {
+      var _this8 = this;
 
-      return runtime_1.wrap(function _callee12$(_context12) {
+      return runtime_1.wrap(function _callee14$(_context14) {
         while (1) {
-          switch (_context12.prev = _context12.next) {
+          switch (_context14.prev = _context14.next) {
             case 0:
               if (mountOpts === void 0) {
                 mountOpts = {};
               }
 
-              _context12.next = 3;
-              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee11() {
+              _context14.next = 3;
+              return testUtils.act( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee13() {
                 var validHooks, _iterator, _step, hook, props, WrapperTree;
 
-                return runtime_1.wrap(function _callee11$(_context11) {
+                return runtime_1.wrap(function _callee13$(_context13) {
                   while (1) {
-                    switch (_context11.prev = _context11.next) {
+                    switch (_context13.prev = _context13.next) {
                       case 0:
-                        validHooks = _this7.config.getValidHooks('onBeforeMount');
+                        validHooks = _this8.config.getValidHooks('onBeforeMount');
                         _iterator = _createForOfIteratorHelperLoose(validHooks);
 
                       case 2:
                         if ((_step = _iterator()).done) {
-                          _context11.next = 8;
+                          _context13.next = 8;
                           break;
                         }
 
                         hook = _step.value;
-                        _context11.next = 6;
-                        return hook.onBeforeMount(_this7, mountOpts);
+                        _context13.next = 6;
+                        return hook.onBeforeMount(_this8, mountOpts);
 
                       case 6:
-                        _context11.next = 2;
+                        _context13.next = 2;
                         break;
 
                       case 8:
-                        if (!_this7.onBeforeMount) {
-                          _context11.next = 11;
+                        if (!_this8.onBeforeMount) {
+                          _context13.next = 11;
                           break;
                         }
 
-                        _context11.next = 11;
-                        return _this7.onBeforeMount(_this7);
+                        _context13.next = 11;
+                        return _this8.onBeforeMount(_this8);
 
                       case 11:
-                        _context11.next = 13;
-                        return getValue(_this7, _this7.props);
+                        _context13.next = 13;
+                        return getValue(_this8, _this8.props);
 
                       case 13:
-                        props = _context11.sent;
-                        WrapperTree = _this7.getWrappers().reduce(function (Tree, wrapper) {
+                        props = _context13.sent;
+                        WrapperTree = _this8.getWrappers().reduce(function (Tree, wrapper) {
                           var wrapperChildren = wrapper.renderChildren !== false && Tree;
 
                           if (wrapper.props) {
@@ -1304,51 +1336,51 @@ var Tester = /*#__PURE__*/function () {
                           }
 
                           return Tree;
-                        }, React.createElement(_this7.TestedComponent, Object.assign({}, props)));
-                        _context11.next = 17;
-                        return _this7.config.enzyme.mount(WrapperTree);
+                        }, React.createElement(_this8.TestedComponent, Object.assign({}, props)));
+                        _context13.next = 17;
+                        return _this8.config.enzyme.mount(WrapperTree);
 
                       case 17:
-                        _this7.wrapper = _context11.sent;
+                        _this8.wrapper = _context13.sent;
 
                         if (!(mountOpts.async !== false)) {
-                          _context11.next = 26;
+                          _context13.next = 26;
                           break;
                         }
 
-                        if (!(_this7.instance && typeof _this7.instance.componentDidMount === 'function')) {
-                          _context11.next = 22;
+                        if (!(_this8.instance && typeof _this8.instance.componentDidMount === 'function')) {
+                          _context13.next = 22;
                           break;
                         }
 
-                        _context11.next = 22;
-                        return _this7.instance.componentDidMount();
+                        _context13.next = 22;
+                        return _this8.instance.componentDidMount();
 
                       case 22:
-                        _context11.next = 24;
+                        _context13.next = 24;
                         return flushPromises();
 
                       case 24:
-                        _context11.next = 26;
-                        return _this7.refresh();
+                        _context13.next = 26;
+                        return _this8.refresh();
 
                       case 26:
                       case "end":
-                        return _context11.stop();
+                        return _context13.stop();
                     }
                   }
-                }, _callee11);
+                }, _callee13);
               })));
 
             case 3:
-              return _context12.abrupt("return", this);
+              return _context14.abrupt("return", this);
 
             case 4:
             case "end":
-              return _context12.stop();
+              return _context14.stop();
           }
         }
-      }, _callee12, this);
+      }, _callee14, this);
     }));
 
     function mount(_x9) {
