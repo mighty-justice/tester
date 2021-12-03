@@ -99,12 +99,16 @@ class Tester {
   }
 
   public async sleep(ms?: number) {
-    await sleep(ms);
+    await act(async () => {
+      await sleep(ms);
+    });
   }
 
   public async refresh(ms?: number) {
-    await sleep(ms);
-    this.update();
+    await act(async () => {
+      await sleep(ms);
+      this.update();
+    });
   }
 
   private getComponent(selector: ISelectArg) {
